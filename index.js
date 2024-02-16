@@ -39,11 +39,11 @@ export default User;
 
 // User.find().then(console.log).catch(console.log)
 
-// app.use((req, res, next)=>{
-//     res.sendStatus(503) // we can use it in case fixing server
-//     // sendStatus it contain end connection not next
-    // console.log(res.sendStatus(503));
-// })
+app.use((req, res, next)=>{
+    res.sendStatus(503) // we can use it in case fixing server
+    // sendStatus it contain end connection not next
+    console.log(res.sendStatus(503));
+})
 // Http Methods
 // Get endpoint
 // app.get('/', (req, res)=> {
