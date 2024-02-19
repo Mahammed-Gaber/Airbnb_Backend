@@ -1,4 +1,4 @@
-
+import {Guest} from '../models/Guest'
 
 
 //CreateGuest
@@ -12,5 +12,12 @@
 //GetAllGuests
 
 const getAllGuests = async ()=> {
-    let data = Guest.find({})
+    try {
+        let data = await Guest.find({});
+        if (data) {
+            return data;
+        }
+    } catch (error) {
+        console.log(error.message);
+    }
 }
