@@ -1,7 +1,11 @@
 import mongoose, { Schema } from "mongoose";
 
 const hostSchema = Schema({
-    host_id: Number,
+    host_id: {
+        type : Number,
+        unique: true,
+        default: 0
+    },
     host_name : {
         type: String,
         required: true,
@@ -36,4 +40,4 @@ const hostSchema = Schema({
 const Host = mongoose.model('Host', hostSchema);
 Host.createIndexes({ host_id: 1 });
 Host.createIndexes({ host_name: 1 });
-module.exports = Host;
+export default Host

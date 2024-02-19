@@ -1,15 +1,5 @@
 /*************** Controller in Design pattern MVC ***************/
 
-// DataBase
-const users = [
-    {name: 'mahammed', dep: 'MERN', id: 1},
-    {name: 'ali', dep: 'SDF', id: 2},
-    {name: 'ahmed', dep: 'SDF', id: 3},
-    {name: 'hassan', dep: 'MERN', id: 4},
-    {name: 'hossam', dep: 'SDF', id: 5},
-    {name: 'asmaa', dep: 'MERN', id: 6},
-]
-
 const getAllHostes = (req, res)=>{
     // res.set('headers', '*')
     res.status(200).send(users);

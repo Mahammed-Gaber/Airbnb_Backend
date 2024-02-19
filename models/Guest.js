@@ -2,7 +2,11 @@ import { Schema } from 'mongoose';
 import { mongoose } from 'mongoose';
 
 const guestSchema = Schema({
-    guest_id: Number,
+    guest_id: {
+        type : Number,
+        unique: true,
+        default: 0
+    },
     guest_name : {
         type: String,
         required: true,
@@ -25,4 +29,4 @@ const guestSchema = Schema({
 
 const Guest = mongoose.model('Guests', guestSchema);
 Guest.createIndexes({ guest_id : 1 });
-module.exports = Guest
+export default Guest

@@ -1,7 +1,11 @@
 import { Schema } from "mongoose";
 
 const reservationSchema = Schema({
-    reservation_id: Number,
+    reservation_id: {
+        type : Number,
+        unique: true,
+        default: 0
+    },
     place_id: {
         type: mongoose.Types.ObjectId,
         ref: 'Place',
