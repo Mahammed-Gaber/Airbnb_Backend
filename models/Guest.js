@@ -23,6 +23,6 @@ const guestSchema = Schema({
     guest_identity_verified: String
 })
 
-const Guest = mongoose.model('Guest', guestSchema);
+const Guest = mongoose.model('Guests', guestSchema);
 Guest.createIndexes({ guest_id : 1 });
 module.exports = Guest

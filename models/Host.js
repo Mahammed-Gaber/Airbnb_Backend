@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 
-const hostSchema = mongoose.Schema({
+const hostSchema = Schema({
     host_id: Number,
     host_name : {
         type: String,

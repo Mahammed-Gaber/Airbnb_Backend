@@ -1,4 +1,3 @@
-
 /*************** Controller in Design pattern MVC ***************/
 
 // DataBase
@@ -11,12 +10,12 @@ const users = [
     {name: 'asmaa', dep: 'MERN', id: 6},
 ]
 
-const getAllUsers = (req, res)=>{
+const getAllHostes = (req, res)=>{
     // res.set('headers', '*')
     res.status(200).send(users);
 }
 
-const getUserById = (req, res) => {
+const getHostById = (req, res) => {
     let id = req.params.id;
     console.log(req.params);
     let user = users.find((value, index, arr) => {return value.id == id});
@@ -26,13 +25,13 @@ const getUserById = (req, res) => {
         res.sendStatus(204)
 }
 
-const createUser = (req, res)=> {
+const createHost = (req, res)=> {
     req.body.id = users.length+1;
     users.push(req.body);
     res.json(req.body);
 }
 
-const updateUserById = (req,res)=> {
+const updateHostById = (req,res)=> {
     req.params.id
     let user = users.find((value)=> {return value.id == req.params.id})
     upuser = {name: 'Ayman', dep: ['SDF', 'MEARN']};
@@ -46,4 +45,4 @@ const updateUserById = (req,res)=> {
 }
 
 
-export {getAllUsers, getUserById, createUser, updateUserById};
+export {getAllHostes, getHostById, createHost, updateHostById};
