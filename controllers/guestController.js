@@ -1,4 +1,4 @@
-import Guest from '../models/Guest'
+const Guest = require('../models/Guest')
 
 
 
@@ -43,4 +43,4 @@ const getAllGuests = async ()=> {
     }
 }
 
-export {createGuest, getAllGuests }
+module.exports = {createGuest, getAllGuests }

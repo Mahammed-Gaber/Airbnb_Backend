@@ -1,7 +1,7 @@
-import { Router } from 'express';
-import { createHost, getAllHostes, getHostById, updateHostById } from '../controllers/hostController.js';
+const express = require('express');
+const { createHost, getAllHostes, getHostById, updateHostById } = require('../controllers/hostController.js');
 
-const route = Router();
+const route = express.Router();
 
 // we have to add a middleware to reject any fack request
 route.param('id', (req,res,next,value)=> {
@@ -38,4 +38,4 @@ route.get('/updateUser/:id', updateHostById)
 // })
 
 
-export default route;
+module.exports = route;

@@ -35,4 +35,4 @@ const updateHostById = (req,res)=> {
 }
 
 
-export {getAllHostes, getHostById, createHost, updateHostById};
+module.exports = {getAllHostes, getHostById, createHost, updateHostById};

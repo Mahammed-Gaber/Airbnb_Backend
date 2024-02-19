@@ -1,7 +1,7 @@
-import { Schema } from 'mongoose';
-import { mongoose } from 'mongoose';
+// const Schema=  from 'mongoose';
+const mongoose = require('mongoose');
 
-const guestSchema = Schema({
+const guestSchema = mongoose.Schema({
     guest_id: {
         type : Number,
         unique: true,
@@ -29,4 +29,4 @@ const guestSchema = Schema({
 
 const Guest = mongoose.model('Guests', guestSchema);
 Guest.createIndexes({ guest_id : 1 });
-export default Guest
+module.exports= Guest

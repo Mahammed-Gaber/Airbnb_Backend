@@ -1,6 +1,6 @@
-import mongoose, { Schema } from "mongoose";
+const mongoose = require("mongoose");
 
-const hostSchema = Schema({
+const hostSchema = mongoose.Schema({
     host_id: {
         type : Number,
         unique: true,
@@ -40,4 +40,4 @@ const hostSchema = Schema({
 const Host = mongoose.model('Host', hostSchema);
 Host.createIndexes({ host_id: 1 });
 Host.createIndexes({ host_name: 1 });
-export default Host
+module.exports = Host
