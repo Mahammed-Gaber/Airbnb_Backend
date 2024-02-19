@@ -6,7 +6,8 @@ const guestSchema = Schema({
     guest_name : {
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        default : 1
     },
     email: String,
     password:{

@@ -8,7 +8,7 @@ import hostRoute from './routes/hostRoute.js';
 // 1) import mongoose
 import { connect } from 'mongoose';
 // 2) connection with database
-connect('mongodb://127.0.0.1/MERN').then(()=>{
+connect('mongodb://127.0.0.1:27017/MERN').then(()=>{
     console.log('Database Connected...');
 }).catch((err)=>{
     console.log(err);
