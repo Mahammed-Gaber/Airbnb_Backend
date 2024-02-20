@@ -19,7 +19,7 @@ const createGuest = async (_name, _email, _password, _guest_picture) => {
         }else
         console.log('error in guest data');
     } catch (error) {
-        console.log(error.message);
+        console.log('from controller' +error.message);
     }
 }
 

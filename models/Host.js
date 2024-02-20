@@ -21,14 +21,15 @@ const hostSchema = mongoose.Schema({
     },
     host_about: {
         type: String,
-        minLength: 20,
+        minLength: 10,
         maxLength: 200
     },
     host_picture_url: String,
     host_neighbourhood: String,
     host_listings_count: Number,
     host_verifications: [{
-        type: String
+        type: String,
+        default: 'email'
     }],
     host_identity_verified: String,
     host_since: {

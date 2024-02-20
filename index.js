@@ -19,7 +19,7 @@ app.use(express.json()); // using when u send data as json data
 app.use(express.urlencoded({extended: true})); // using when u send data by forms or application/x-www-form-urlencoded
 app.use(helmet()); // to add more security your apps by setting various HTTP headers.
 
-app.use('/users' , hostRoute);
+app.use('/host' , hostRoute);
 app.use('/guest', guestRoute)
 
 
