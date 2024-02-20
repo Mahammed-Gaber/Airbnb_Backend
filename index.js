@@ -22,7 +22,5 @@ app.use(helmet()); // to add more security your apps by setting various HTTP hea
 app.use('/host' , hostRoute);
 app.use('/guest', guestRoute)
 
-
-
 app.listen(port, ()=> console.log(`app listinig in port ${port}`))
 

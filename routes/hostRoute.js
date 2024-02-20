@@ -48,9 +48,8 @@ route.post('/create', Upload.single('host_picture'), async(req ,res) => {
         res.status(500).send(error.message);
     }
 })
+
 route.get('/updateUser/:id', updateHostById)
-
-
 
 // route.put('/update/:id', (req,res)=>{  // use put when u want changa all data
 //     let user = users.findIndex((value)=>{value.id == req.params.id});
