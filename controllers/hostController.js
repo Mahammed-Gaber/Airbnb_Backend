@@ -33,9 +33,9 @@ const getHostById = (req, res) => {
 
 const createHost = async (_host_name, _email, _hashPass, _host_location, _host_about, _host_picture_url, _host_neighbourhood, _host_listings_count)=> {
     try {
-        let hostLength = await Host.find()
+        let hostLength = await Host.find({}, {host_id : 1}).sort({ host_id: -1}).limit(1)
         let data = await Host.create({
-            host_id : hostLength.length +1,
+            host_id : hostLength +1,
             host_name:_host_name,
             email : _email, 
             password: _hashPass, 
@@ -54,8 +54,8 @@ const createHost = async (_host_name, _email, _hashPass, _host_location, _host_a
 }
 
 const updateHostById = (req,res)=> {
-    req.params.id
-    let user = users.find((value)=> {return value.id == req.params.id})
+    const id = req.params.id * 1
+    let user = users.find(value => {return value.id === id})
     upuser = {name: 'Ayman', dep: ['SDF', 'MEARN']};
     user.name = upuser.name;
     user.dep = upuser.dep;

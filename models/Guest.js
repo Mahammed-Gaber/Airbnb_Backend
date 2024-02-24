@@ -1,5 +1,5 @@
-// const Schema=  from 'mongoose';
 const mongoose = require('mongoose');
+const validator = require('validator');
 
 const guestSchema = mongoose.Schema({
     guest_id: {
@@ -9,12 +9,29 @@ const guestSchema = mongoose.Schema({
     },
     guest_name : {
         type: String,
-        required: true,
+        required: [true, 'Please tell us your name!'],
         unique: true
     },
-    email: String,
+    email: {
+        type: String,
+        require : [true, 'Please provide your email'],
+        unique : true,
+        lowercase : true,
+        validate : [validator.isEmail , 'Please provide a valid email']
+    },
     password:{
-        type : String
+        type : String,
+        require : [true, 'Please provide a valid password'],
+        minlength : 8
+    },
+    PasswordConfirm : {
+        type : String,
+        require : [true, 'Please confirm your password'],
+        validate : {
+            validator : function (pass) {
+                return pass === this.password
+            }
+        }
     },
     guest_since: {
         type: Date,
@@ -27,6 +44,6 @@ const guestSchema = mongoose.Schema({
     guest_identity_verified: String
 })
 
-const Guest = mongoose.model('Guests', guestSchema);
+const Guest = mongoose.model('Guest', guestSchema);
 Guest.createIndexes({ guest_id : 1 });
 module.exports= Guest
