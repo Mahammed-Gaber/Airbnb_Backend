@@ -49,10 +49,13 @@ const guestSchema = mongoose.Schema({
 
 
 guestSchema.pre('save', async function (next){
+
     // it run if password is modified to hash it
     if(!this.isModified('password')) return next;
+
     // to hashing pass
     this.password = await bcrypt.hash('password', 10);
+
     // to delete password confirm field
     this.PasswordConfirm = undefined;
     next()

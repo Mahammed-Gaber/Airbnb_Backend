@@ -1,7 +1,11 @@
+// save port and token in file config .env
+require("dotenv").config();
+
 const express = require('express');
 const app = express();
 const port = process.env.PORT || 5050;
 const helmet =require('helmet');
+
 
 const hostRoute = require('./routes/hostRoute.js');
 const guestRoute = require('./routes/guestRoute.js');
