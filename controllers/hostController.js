@@ -31,14 +31,14 @@ const getHostById = (req, res) => {
 }
 
 
-const createHost = async (_host_name, _email, _hashPass, _host_location, _host_about, _host_picture_url, _host_neighbourhood, _host_listings_count)=> {
+const createHost = async (_host_name, _email, _Pass, _host_location, _host_about, _host_picture_url, _host_neighbourhood, _host_listings_count)=> {
     try {
         let hostLength = await Host.find({}, {host_id : 1}).sort({ host_id: -1}).limit(1)
         let data = await Host.create({
             host_id : hostLength +1,
             host_name:_host_name,
             email : _email, 
-            password: _hashPass, 
+            password: _Pass, 
             host_location : _host_location, 
             host_about: _host_about, 
             host_picture_url: _host_picture_url, 

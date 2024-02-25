@@ -2,8 +2,8 @@ const express = require('express');
 const { createHost, getAllHostes, getHostById, updateHostById } = require('../controllers/hostController.js');
 const multer = require('multer');
 const Host = require('../models/Host.js');
-const bcrypt = require('bcrypt');
-const path = require('path')
+const path = require('path');
+const catchAsync = require('../utils/catchAsync.js');
 
 
 const route = express.Router();
@@ -34,20 +34,14 @@ route.get('/', getAllHostes)
 route.get('/:id', getHostById)
 
 
-route.post('/create', Upload.single('host_picture'), async(req ,res) => {
+route.post('/create', Upload.single('host_picture'), catchAsync(async(req ,res) => {
     let host_picture = new Date + req.file.filename;
     let {host_name, email, password,host_location, host_about, host_neighbourhood, host_listings_count} = req.body;
-    try {
-        bcrypt.hash(password, 10, async(err, hashPass)=> {
-            let data = await createHost(host_name, email, hashPass, host_location, host_about, host_picture, host_neighbourhood, host_listings_count);
+        let data = await createHost(host_name, email, password, host_location, host_about, host_picture, host_neighbourhood, host_listings_count);
         if (data) {
             res.status(201).send(data)
         }else res.sendStatus(400)
-        })
-    } catch (error) {
-        res.status(500).send(error.message);
-    }
-})
+}))
 
 route.get('/updateUser/:id', updateHostById)
 

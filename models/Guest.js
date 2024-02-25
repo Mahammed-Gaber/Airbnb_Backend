@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const bcrypt = require('bcrypt');
+
 
 const guestSchema = mongoose.Schema({
     guest_id: {
@@ -43,6 +45,17 @@ const guestSchema = mongoose.Schema({
         type: String
     }],
     guest_identity_verified: String
+})
+
+
+guestSchema.pre('save', async function (next){
+    // it run if password is modified to hash it
+    if(!this.isModified('password')) return next;
+    // to hashing pass
+    this.password = await bcrypt.hash('password', 10);
+    // to delete password confirm field
+    this.PasswordConfirm = undefined;
+    next()
 })
 
 const Guest = mongoose.model('Guest', guestSchema);

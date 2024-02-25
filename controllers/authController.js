@@ -1,9 +1,8 @@
 const Guest = require('../models/Guest');
 const catchAsync = require('../utils/catchAsync');
 
-
+// auth security
 exports.signup = catchAsync( async(req ,res) => {
-    console.log(req.body);
     let dataLength = await Guest.findOne({}, {guest_id : 1}).sort({guest_id: -1}).limit(1);
     let {_name, _email, _password,_pass_confirm, _guest_picture} = req.body;
     let newUser = await Guest.create({

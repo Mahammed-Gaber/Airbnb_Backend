@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+const bcrypt = require('bcrypt');
+
 
 const hostSchema = mongoose.Schema({
     host_id: {
@@ -36,6 +38,11 @@ const hostSchema = mongoose.Schema({
         type: Date,
         default: Date.now
     }
+})
+
+hostSchema.pre('save', function (next){
+    if (!this.isModified('password')) return next;
+    this.password = bcrypt.hash('password', 10);
 })
 
 const Host = mongoose.model('Host', hostSchema);
