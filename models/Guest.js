@@ -5,7 +5,7 @@ const guestSchema = mongoose.Schema({
     guest_id: {
         type : Number,
         unique: true,
-        default: 0
+        default: 6
     },
     guest_name : {
         type: String,
@@ -14,23 +14,24 @@ const guestSchema = mongoose.Schema({
     },
     email: {
         type: String,
-        require : [true, 'Please provide your email'],
+        required : [true, 'Please provide your email'],
         unique : true,
         lowercase : true,
         validate : [validator.isEmail , 'Please provide a valid email']
     },
     password:{
         type : String,
-        require : [true, 'Please provide a valid password'],
+        required : [true, 'Please provide a valid password'],
         minlength : 8
     },
     PasswordConfirm : {
         type : String,
-        require : [true, 'Please confirm your password'],
+        required : [true, 'Please confirm your password'],
         validate : {
             validator : function (pass) {
                 return pass === this.password
-            }
+            },
+            message : 'Password is not the same'
         }
     },
     guest_since: {

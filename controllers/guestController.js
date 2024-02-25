@@ -1,11 +1,18 @@
 const Guest = require('../models/Guest')
 
 
+const catchAsync = fn => {
+    // return (req, res, next) => {
+    //     fn(req, res, next).catch(err => next(err))
+    // }
+    return (_name, _email, _password, _guest_picture) => {
+        fn(_name, _email, _password, _guest_picture).catch(err)
+    }
+}
 
 //CreateGuest
 //don't miss add verification & identity_verified after
 const createGuest = async (_name, _email, _password, _guest_picture) => {
-    try {
         let dataLength = await Guest.findOne({}, {guest_id : 1}).sort({guest_id: -1}).limit(1);
         console.log(dataLength.guest_id);
         let data = await Guest.create({
@@ -17,11 +24,7 @@ const createGuest = async (_name, _email, _password, _guest_picture) => {
         })
         if (data) {
             return data;
-        }else
-        console.log('error in guest data');
-    } catch (error) {
-        console.log('from controller' +error.message);
-    }
+        }
 }
 
 //DeleteGuest

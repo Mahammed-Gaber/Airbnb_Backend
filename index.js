@@ -19,8 +19,8 @@ app.use(express.json()); // using when u send data as json data
 app.use(express.urlencoded({extended: true})); // using when u send data by forms or application/x-www-form-urlencoded
 app.use(helmet()); // to add more security your apps by setting various HTTP headers.
 
-app.use('/host' , hostRoute);
-app.use('/guest', guestRoute)
+app.use('/hosts' , hostRoute);
+app.use('/guests', guestRoute)
 
 app.listen(port, ()=> console.log(`app listinig in port ${port}`))
 

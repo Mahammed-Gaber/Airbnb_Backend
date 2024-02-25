@@ -2,9 +2,12 @@ const express = require('express');
 const multer = require('multer');
 const path =require('path');
 const guestController = require('../controllers/guestController');
-const route = express.Router();
+const router = express.Router();
 const bcrypt = require('bcrypt');
-const sendEmail = require('../nodeMailer')
+const sendEmail = require('../nodeMailer');
+const catchAsync = require('../utils/catchAsync');
+const authController = require('../controllers/authController')
+
 
 // Upload ur imgs 
 const storeImage = multer.diskStorage({
@@ -17,44 +20,31 @@ const storeImage = multer.diskStorage({
 })
 const Upload = multer( {storage: storeImage} );
 
+// signup user
+router.post('/signup',Upload.single('guest_picture'), authController.signup)
+
+
 // get All Guests
-route.get('/showGuests', async (req , res) => {
-    try {
+router.get('/showGuests', catchAsync(
+async (req , res , next) => {
         let data = await guestController.getAllGuests()
-        if (data != "error") {
-            // res.status(200).send(data);
-            res.json({
-                guests : data,
-                msg: "ok",
-                status: 200
+        if (data) {
+            // sendEmail(email, 'welcome')
+            res.status(200).json({
+                status : 'success',
+                data: {
+                    guest : data,
+                },
             });
         }
-    } catch (error) {
-        console.log(error.message);
-    }
-})
+}))
 // Register & Add guest
-route.post('/register', Upload.single('guest_picture'), async (req, res) => {
-    let guest_picture = new Date + req.file;
-    try {
-        let {name, email, password} = req.body;
+router.post('/register', Upload.single('guest_picture'), authController.signup)
 
-        bcrypt.hash(password, 10, async (err, hashPass)=>{
-        let data = await guestController.createGuest(name, email, hashPass, guest_picture);
-        if (data) {
-            sendEmail(email, 'Welcome to our site, thanks for Registeration')
-            res.status(201).send('ceated guest');
-        }else{
-            res.sendStatus(400)
-        }
-        })
-    } catch (error) {
-        console.log(error);
-    }
-})
+
 
 // update data
-route.put('/update', (req, res) => {
+router.put('/update', (req, res) => {
     try {
         
     } catch (error) {
@@ -62,7 +52,7 @@ route.put('/update', (req, res) => {
     }
 })
 
-// route.get('/All', guestController.getAllGuests)
+// router.get('/All', guestController.getAllGuests)
 
 
-module.exports= route;
+module.exports= router;
