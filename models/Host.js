@@ -1,7 +1,13 @@
-import mongoose, { Schema } from "mongoose";
+const mongoose = require("mongoose");
+const bcrypt = require('bcrypt');
 
-const hostSchema = Schema({
-    host_id: Number,
+
+const hostSchema = mongoose.Schema({
+    host_id: {
+        type : Number,
+        unique: true,
+        default: 0
+    },
     host_name : {
         type: String,
         required: true,
@@ -17,14 +23,15 @@ const hostSchema = Schema({
     },
     host_about: {
         type: String,
-        minLength: 20,
+        minLength: 10,
         maxLength: 200
     },
     host_picture_url: String,
     host_neighbourhood: String,
     host_listings_count: Number,
     host_verifications: [{
-        type: String
+        type: String,
+        default: 'email'
     }],
     host_identity_verified: String,
     host_since: {
@@ -33,7 +40,12 @@ const hostSchema = Schema({
     }
 })
 
+hostSchema.pre('save', function (next){
+    if (!this.isModified('password')) return next;
+    this.password = bcrypt.hash('password', 10);
+})
+
 const Host = mongoose.model('Host', hostSchema);
 Host.createIndexes({ host_id: 1 });
 Host.createIndexes({ host_name: 1 });
-module.exports = Host;
+module.exports = Host

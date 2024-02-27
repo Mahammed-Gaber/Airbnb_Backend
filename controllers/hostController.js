@@ -1,39 +1,61 @@
-/*************** Controller in Design pattern MVC ***************/
+const Host = require("../models/Host");
 
-// DataBase
-const users = [
-    {name: 'mahammed', dep: 'MERN', id: 1},
-    {name: 'ali', dep: 'SDF', id: 2},
-    {name: 'ahmed', dep: 'SDF', id: 3},
-    {name: 'hassan', dep: 'MERN', id: 4},
-    {name: 'hossam', dep: 'SDF', id: 5},
-    {name: 'asmaa', dep: 'MERN', id: 6},
-]
 
+
+//Get All Hosts
 const getAllHostes = (req, res)=>{
     // res.set('headers', '*')
-    res.status(200).send(users);
+    try {
+        let data = Host.find({});
+        if (data) {
+            return data
+        }else console.log('Error in Host Data');
+        res.status(200).send(users);
+    } catch (error) {
+        console.log(error.message);
+    }
 }
 
+// git host by ID
 const getHostById = (req, res) => {
-    let id = req.params.id;
-    console.log(req.params);
-    let user = users.find((value, index, arr) => {return value.id == id});
-    if(user)
-        res.status(200).send(user);
-    else
-        res.sendStatus(204)
+    try {
+        let {id} = req.params;
+        let host = Host.findOne({host_id : id});
+        if(host)
+            res.status(200).send(user);
+        else
+            res.sendStatus(204)
+    } catch (error) {
+        console.log(error.message);
+    }
 }
 
-const createHost = (req, res)=> {
-    req.body.id = users.length+1;
-    users.push(req.body);
-    res.json(req.body);
+
+const createHost = async (_host_name, _email, _Pass, _host_location, _host_about, _host_picture_url, _host_neighbourhood, _host_listings_count)=> {
+    try {
+        let hostLength = await Host.find({}, {host_id : 1}).sort({ host_id: -1}).limit(1)
+        let data = await Host.create({
+            host_id : hostLength +1,
+            host_name:_host_name,
+            email : _email, 
+            password: _Pass, 
+            host_location : _host_location, 
+            host_about: _host_about, 
+            host_picture_url: _host_picture_url, 
+            host_neighbourhood : _host_neighbourhood, 
+            host_listings_count: _host_listings_count,
+            })
+            if (data) {
+                return data
+            }else console.log('Error in host data');
+    } catch (error) {
+        console.log(error.message);
+    }
 }
 
 const updateHostById = (req,res)=> {
-    req.params.id
-    let user = users.find((value)=> {return value.id == req.params.id})
+    const id = req.params.id * 1
+    let user = users.find(value => {return value.id === id})
     upuser = {name: 'Ayman', dep: ['SDF', 'MEARN']};
     user.name = upuser.name;
     user.dep = upuser.dep;
@@ -45,4 +67,4 @@ const updateHostById = (req,res)=> {
 }
 
 
-export {getAllHostes, getHostById, createHost, updateHostById};
+module.exports = {getAllHostes, getHostById, createHost, updateHostById};

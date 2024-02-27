@@ -1,7 +1,25 @@
-import { Router } from 'express';
-import { createHost, getAllHostes, getHostById, updateHostById } from '../controllers/hostController.js';
+const express = require('express');
+const { createHost, getAllHostes, getHostById, updateHostById } = require('../controllers/hostController.js');
+const multer = require('multer');
+const Host = require('../models/Host.js');
+const path = require('path');
+const catchAsync = require('../utils/catchAsync.js');
 
-const route = Router();
+
+const route = express.Router();
+
+// Upload Image
+const storeImage = multer.diskStorage({
+    destination : (req, file, callback)=> {
+        callback(null, path.join(__dirname, '..', 'images'))
+    },
+    filename: (req, file, callback) => {
+        callback(null, file.originalname);
+    }
+})
+const Upload = multer( {storage: storeImage} );
+
+
 
 // we have to add a middleware to reject any fack request
 route.param('id', (req,res,next,value)=> {
@@ -14,10 +32,18 @@ route.param('id', (req,res,next,value)=> {
 
 route.get('/', getAllHostes)
 route.get('/:id', getHostById)
-route.post('/create', createHost)
+
+
+route.post('/create', Upload.single('host_picture'), catchAsync(async(req ,res) => {
+    let host_picture = new Date + req.file.filename;
+    let {host_name, email, password,host_location, host_about, host_neighbourhood, host_listings_count} = req.body;
+        let data = await createHost(host_name, email, password, host_location, host_about, host_picture, host_neighbourhood, host_listings_count);
+        if (data) {
+            res.status(201).send(data)
+        }else res.sendStatus(400)
+}))
+
 route.get('/updateUser/:id', updateHostById)
-
-
 
 // route.put('/update/:id', (req,res)=>{  // use put when u want changa all data
 //     let user = users.findIndex((value)=>{value.id == req.params.id});
@@ -38,4 +64,4 @@ route.get('/updateUser/:id', updateHostById)
 // })
 
 
-export default route;
+module.exports = route;

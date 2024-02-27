@@ -1,7 +1,11 @@
 import mongoose, { Schema } from "mongoose";
 
 const reviewSchema = Schema({
-    review_id : Number,
+    review_id : {
+        type : Number,
+        unique: true,
+        default: 0
+    },
     comments : String,
     reviewer_id:{
         type: mongoose.Types.ObjectId,

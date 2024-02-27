@@ -1,7 +1,11 @@
 import { Schema } from 'mongoose';
 
 const placeSchema = Schema({
-    place_id: Number,
+    place_id: {
+        type : Number,
+        unique: true,
+        default: 0
+    },
     place_name: {
         type:String,
         minLength: 10,
@@ -51,4 +55,4 @@ const placeSchema = Schema({
 const Place = mongoose.model('Place', placeSchema);
 Place.createIndexes({ place_id : 1 });
 Place.createIndexes({ place_name : 1 });
-module.exports = Place;
+export default Place
