@@ -11,7 +11,7 @@ const guestSchema = mongoose.Schema({
     },
     guest_name : {
         type: String,
-        required: [true, 'Please tell us your name!'],
+        required: true,
         unique: true
     },
     email: {
