@@ -1,15 +1,5 @@
 const Guest = require('../models/Guest')
 
-
-const catchAsync = fn => {
-    // return (req, res, next) => {
-    //     fn(req, res, next).catch(err => next(err))
-    // }
-    return (_name, _email, _password, _guest_picture) => {
-        fn(_name, _email, _password, _guest_picture).catch(err)
-    }
-}
-
 //CreateGuest
 //don't miss add verification & identity_verified after
 const createGuest = async (_name, _email, _password, _guest_picture) => {

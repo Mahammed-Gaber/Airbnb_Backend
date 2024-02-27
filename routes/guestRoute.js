@@ -6,7 +6,7 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 const sendEmail = require('../nodeMailer');
 const catchAsync = require('../utils/catchAsync');
-const authController = require('../controllers/authController')
+const authController = require('../controllers/authController');
 
 
 // Upload ur imgs 
@@ -22,10 +22,11 @@ const Upload = multer( {storage: storeImage} );
 
 // signup user
 router.post('/signup',Upload.single('guest_picture'), authController.signup)
+router.post('/login', authController.login)
 
 
 // get All Guests
-router.get('/showGuests', catchAsync(
+router.get('/showGuests', authController.protect, catchAsync(
 async (req , res , next) => {
         let data = await guestController.getAllGuests()
         if (data) {
@@ -46,7 +47,7 @@ router.post('/register', Upload.single('guest_picture'), authController.signup)
 // update data
 router.put('/update', (req, res) => {
     try {
-        
+
     } catch (error) {
         
     }
