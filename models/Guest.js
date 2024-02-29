@@ -66,14 +66,14 @@ guestSchema.pre('save', async function (next){
 
 // hey! dont forget async & await with hassing
 guestSchema.methods.correctPassword = async(candedatePassword, userPassword)=> {
-    console.log(candedatePassword, userPassword);
-    return await bcrypt.compare(userPassword, candedatePassword);
+    return await bcrypt.compare(candedatePassword, userPassword);
 }
 
 // add method check if password changed
-guestSchema.methods.changedPasswordAfter = (JWTTiemstamp) => {
-    if (this.passwordChangedAt) {
-        console.log(passwordChangedAt, JWTTiemstamp);
+guestSchema.methods.changedPasswordAfter = (passwordChangedAt,JWTTiemstamp) => {
+    if (passwordChangedAt) {
+        const changedTimestamp = parseInt(passwordChangedAt.getTime() /1000, 10)
+        console.log(changedTimestamp > JWTTiemstamp);
     }
     return false;
 }

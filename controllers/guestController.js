@@ -1,41 +1,17 @@
-const Guest = require('../models/Guest')
+const Guest = require('../models/Guest');
+const catchAsync = require('../utils/catchAsync');
 
-//CreateGuest
-//don't miss add verification & identity_verified after
-const createGuest = async (_name, _email, _password, _guest_picture, passwordChangedAt) => {
-        let dataLength = await Guest.findOne({}, {guest_id : 1}).sort({guest_id: -1}).limit(1);
-        console.log(dataLength.guest_id);
-        let data = await Guest.create({
-            guest_id : dataLength.guest_id +1 ,
-            guest_name : _name,
-            email : _email,
-            password: _password,
-            guest_picture_url: _guest_picture,
-            passwordChangedAt : passwordChangedAt
-        })
-        if (data) {
-            return data;
-        }
-}
 
-//DeleteGuest
+const getAllGuests = catchAsync(async (req , res , next) => {
+            let data = await Guest.find();
+            if (data) {
+                res.status(200).json({
+                    status : 'success',
+                    data: {
+                        guest : data,
+                    },
+                });
+            }
+    })
 
-//GetGuestById
-
-//UpdataGuest
-
-//GetAllGuests
-
-const getAllGuests = async ()=> {
-    try {
-        let data = await Guest.find({});
-        if (data) {
-            return data;
-        }else
-        console.log('error in guest data');
-    } catch (error) {
-        console.log(error.message);
-    }
-}
-
-module.exports = {createGuest, getAllGuests }
+module.exports = { getAllGuests }

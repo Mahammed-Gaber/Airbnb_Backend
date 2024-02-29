@@ -88,13 +88,15 @@ exports.protect = catchAsync(async(req, res, next) => {
     
     // 3) we have to check if user still exist
     const freshUser = await Guest.findById(decoded.id);
-    freshUser.changedPasswordAfter(decoded.iat);
     if (!freshUser) {
         return res.status(400).send('user logging does no longer exist');
     }
 
     // 4) check if user change password after the token was issued
-    
+    if(freshUser.changedPasswordAfter(freshUser.passwordChangedAt, decoded.iat)){
+        return res.status(401).send('User resently canged password! Please login again.')
+    };
 
+    req.Guest = freshUser;
     next();
 })

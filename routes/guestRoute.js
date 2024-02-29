@@ -1,13 +1,9 @@
 const express = require('express');
 const multer = require('multer');
 const path =require('path');
-const guestController = require('../controllers/guestController');
 const router = express.Router();
-const bcrypt = require('bcrypt');
-const sendEmail = require('../nodeMailer');
-const catchAsync = require('../utils/catchAsync');
-const authController = require('../controllers/authController');
-
+const guestController = require('../controllers/guestController');
+const authGuestController = require('../controllers/authGuestController');
 
 // Upload ur imgs 
 const storeImage = multer.diskStorage({
@@ -20,40 +16,10 @@ const storeImage = multer.diskStorage({
 })
 const Upload = multer( {storage: storeImage} );
 
-// signup user
-router.post('/signup',Upload.single('guest_picture'), authController.signup)
-router.post('/login', authController.login)
 
-
-// get All Guests
-router.get('/showGuests', authController.protect, catchAsync(
-async (req , res , next) => {
-        let data = await guestController.getAllGuests()
-        if (data) {
-            // sendEmail(email, 'welcome')
-            res.status(200).json({
-                status : 'success',
-                data: {
-                    guest : data,
-                },
-            });
-        }
-}))
-// Register & Add guest
-router.post('/register', Upload.single('guest_picture'), authController.signup)
-
-
-
-// update data
-router.put('/update', (req, res) => {
-    try {
-
-    } catch (error) {
-        
-    }
-})
-
-// router.get('/All', guestController.getAllGuests)
+router.post('/signup',Upload.single('guest_picture'), authGuestController.signup);
+router.post('/login', authGuestController.login)
+router.get('/showGuests', authGuestController.protect, guestController.getAllGuests)
 
 
 module.exports= router;
