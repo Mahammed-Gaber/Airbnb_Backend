@@ -24,12 +24,16 @@ const createHost = async (_host_name, _email, _Pass, _host_location, _host_about
 }
 
 //Get All Hosts
-const getAllHostes = (req, res)=>{
+const getAllHostes =async (req, res)=>{
     // res.set('headers', '*')
     try {
-        let data = Host.find({});
+        let data = await Host.find({});
+        console.log(data);
         if (data) {
-            return data
+            res.status(200).json({
+                status : 'success',
+                hosts : data
+            })
         }else console.log('Error in Host Data');
         res.status(200).send(users);
     } catch (error) {
@@ -38,10 +42,10 @@ const getAllHostes = (req, res)=>{
 }
 
 // git host by ID
-const getHostById = (req, res) => {
+const getHostById = async(req, res) => {
     try {
         let {id} = req.params;
-        let host = Host.findOne({host_id : id});
+        let host = await Host.findOne({host_id : id});
         if(host)
             res.status(200).send(user);
         else
@@ -54,8 +58,8 @@ const getHostById = (req, res) => {
 
 /******************************************************* */
 // -----------------------update Hosts---------------------------------
-const updateHostById  =(req, res) => {
-    Host.findByIdAndUpdate(req.params.id,{
+const updateHostById  = async(req, res) => {
+    await Host.findByIdAndUpdate(req.params.id,{
         host_name: req.body.host_name,
         email: req.body.email,
         password: req.body.password,
@@ -76,8 +80,8 @@ const updateHostById  =(req, res) => {
 /******************************************************* */
 // -----------------------delete Hosts---------------------------------
 
-const deleteHosts =(req, res) => {
-    Host.findByIdAndDelete(req.params.id,{
+const deleteHosts =async (req, res) => {
+    await Host.findByIdAndDelete(req.params.id,{
         email: req.body.email
     })
     .then(data =>{

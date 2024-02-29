@@ -24,14 +24,15 @@ exports.signup = catchAsync( async(req ,res ,next) => {
     }
 
     //2) if everything is good create new user
-    let {_name, _email, _password,_pass_confirm} = req.body;
+    let {_name, _email, _password,_pass_confirm, _guest_picture, _passwordChangedAt} = req.body;
     let newUser = await Guest.create({
         guest_id : count + 1 || dataLength.guest_id +1,
         guest_name : _name,
         email : _email,
         password: _password,
         PasswordConfirm : _pass_confirm,
-        // guest_picture_url: _guest_picture,
+        guest_picture_url: _guest_picture,
+        passwordChangedAt: _passwordChangedAt
     });
 
     //3) create a token and every token content Header, payload, signature
@@ -50,7 +51,6 @@ exports.login = catchAsync(async(req, res, next) => {
     if (!email || !password) {
         return res.status(400).send('Please provide email and password');
     }
-    console.log('first step done');
 
     //2) check if email exist and password correct
     const user = await Guest.findOne({email}).select('+password');
@@ -85,16 +85,15 @@ exports.protect = catchAsync(async(req, res, next) => {
     } catch (error) {
         return res.status(500).send(error.message)
     }
-    // console.log(decoded);
     
     // 3) we have to check if user still exist
     const freshUser = await Guest.findById(decoded.id);
+    freshUser.changedPasswordAfter(decoded.iat);
     if (!freshUser) {
         return res.status(400).send('user logging does no longer exist');
     }
 
     // 4) check if user change password after the token was issued
-
     
 
     next();

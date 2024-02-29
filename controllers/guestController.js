@@ -2,7 +2,7 @@ const Guest = require('../models/Guest')
 
 //CreateGuest
 //don't miss add verification & identity_verified after
-const createGuest = async (_name, _email, _password, _guest_picture) => {
+const createGuest = async (_name, _email, _password, _guest_picture, passwordChangedAt) => {
         let dataLength = await Guest.findOne({}, {guest_id : 1}).sort({guest_id: -1}).limit(1);
         console.log(dataLength.guest_id);
         let data = await Guest.create({
@@ -11,6 +11,7 @@ const createGuest = async (_name, _email, _password, _guest_picture) => {
             email : _email,
             password: _password,
             guest_picture_url: _guest_picture,
+            passwordChangedAt : passwordChangedAt
         })
         if (data) {
             return data;

@@ -34,7 +34,10 @@ route.post('/create', Upload.single('host_picture'), catchAsync(async(req ,res) 
     let {host_name, email, password,host_location, host_about, host_neighbourhood, host_listings_count} = req.body;
         let data = await createHost(host_name, email, password, host_location, host_about, host_picture, host_neighbourhood, host_listings_count);
         if (data) {
-            res.status(201).send(data)
+            res.status(201).json({
+                status : 'success',
+                host : data
+            })
         }else res.sendStatus(400)
 }))
 

@@ -1,6 +1,6 @@
-import { Schema } from 'mongoose';
+const mongoose = require("mongoose");
 
-const placeSchema = Schema({
+const placeSchema = mongoose.Schema({
     place_id: {
         type : Number,
         unique: true,
@@ -55,4 +55,4 @@ const placeSchema = Schema({
 const Place = mongoose.model('Place', placeSchema);
 Place.createIndexes({ place_id : 1 });
 Place.createIndexes({ place_name : 1 });
-export default Place
+module.exports = Place
