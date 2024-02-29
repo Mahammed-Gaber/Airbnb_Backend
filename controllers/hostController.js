@@ -1,6 +1,27 @@
 const Host = require("../models/Host");
 
 
+const createHost = async (_host_name, _email, _Pass, _host_location, _host_about, _host_picture_url, _host_neighbourhood, _host_listings_count)=> {
+    try {
+        let hostLength = await Host.find({}, {host_id : 1}).sort({ host_id: -1}).limit(1)
+        let data = await Host.create({
+            host_id : hostLength +1,
+            host_name:_host_name,
+            email : _email, 
+            password: _Pass, 
+            host_location : _host_location, 
+            host_about: _host_about, 
+            host_picture_url: _host_picture_url, 
+            host_neighbourhood : _host_neighbourhood, 
+            host_listings_count: _host_listings_count,
+            })
+            if (data) {
+                return data
+            }else console.log('Error in host data');
+    } catch (error) {
+        console.log(error.message);
+    }
+}
 
 //Get All Hosts
 const getAllHostes = (req, res)=>{
@@ -31,40 +52,40 @@ const getHostById = (req, res) => {
 }
 
 
-const createHost = async (_host_name, _email, _Pass, _host_location, _host_about, _host_picture_url, _host_neighbourhood, _host_listings_count)=> {
-    try {
-        let hostLength = await Host.find({}, {host_id : 1}).sort({ host_id: -1}).limit(1)
-        let data = await Host.create({
-            host_id : hostLength +1,
-            host_name:_host_name,
-            email : _email, 
-            password: _Pass, 
-            host_location : _host_location, 
-            host_about: _host_about, 
-            host_picture_url: _host_picture_url, 
-            host_neighbourhood : _host_neighbourhood, 
-            host_listings_count: _host_listings_count,
-            })
-            if (data) {
-                return data
-            }else console.log('Error in host data');
-    } catch (error) {
-        console.log(error.message);
-    }
-}
+/******************************************************* */
+// -----------------------update Hosts---------------------------------
+const updateHostById  =(req, res) => {
+    Host.findByIdAndUpdate(req.params.id,{
+        host_name: req.body.host_name,
+        email: req.body.email,
+        password: req.body.password,
+        host_location: req.body.host_location,
+        host_about: req.body.host_about,
+        host_neighbourhood: req.body.host_neighbourhood,
+        host_listings_count: req.body.host_listings_count,
+        host_picture: req.body.host_picture,
+    },{new:true})
+    .then(data =>{
+        res.send("update done ...." + data);
+        return data;
+    }).catch(err =>{
+        console.log(err)
+    })
+};
 
-const updateHostById = (req,res)=> {
-    const id = req.params.id * 1
-    let user = users.find(value => {return value.id === id})
-    upuser = {name: 'Ayman', dep: ['SDF', 'MEARN']};
-    user.name = upuser.name;
-    user.dep = upuser.dep;
-    console.log(user);
-    res.status(201).send(user)
-    // here in first time it status is 201,
-    // in the second time in the same user it status is 304,
-    // search why that happend and what mean 304 ?
-}
+/******************************************************* */
+// -----------------------delete Hosts---------------------------------
+
+const deleteHosts =(req, res) => {
+    Host.findByIdAndDelete(req.params.id,{
+        email: req.body.email
+    })
+    .then(data =>{
+        res.send("deleteng  done" + data);
+    }).catch(err =>{
+        console.log(err)
+    })
+};
 
 
-module.exports = {getAllHostes, getHostById, createHost, updateHostById};
+module.exports = {getAllHostes, getHostById, createHost, updateHostById, deleteHosts};

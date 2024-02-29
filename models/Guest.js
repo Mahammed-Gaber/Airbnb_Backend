@@ -66,7 +66,7 @@ guestSchema.pre('save', async function (next){
 
 // hey! dont forget async & await with hassing
 guestSchema.methods.correctPassword = async(candedatePassword, userPassword)=> {
-    return await bcrypt.compare(candedatePassword, userPassword);
+    console.log(await bcrypt.compare(candedatePassword, userPassword));
 }
 
 // add method check if password changed

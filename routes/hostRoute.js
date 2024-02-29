@@ -1,13 +1,11 @@
 const express = require('express');
-const { createHost, getAllHostes, getHostById, updateHostById } = require('../controllers/hostController.js');
+const { createHost, getAllHostes, getHostById, updateHostById, deleteHosts } = require('../controllers/hostController.js');
 const multer = require('multer');
 const Host = require('../models/Host.js');
 const path = require('path');
 const catchAsync = require('../utils/catchAsync.js');
 
-
 const route = express.Router();
-
 // Upload Image
 const storeImage = multer.diskStorage({
     destination : (req, file, callback)=> {
@@ -18,8 +16,6 @@ const storeImage = multer.diskStorage({
     }
 })
 const Upload = multer( {storage: storeImage} );
-
-
 
 // we have to add a middleware to reject any fack request
 route.param('id', (req,res,next,value)=> {
@@ -33,7 +29,6 @@ route.param('id', (req,res,next,value)=> {
 route.get('/', getAllHostes)
 route.get('/:id', getHostById)
 
-
 route.post('/create', Upload.single('host_picture'), catchAsync(async(req ,res) => {
     let host_picture = new Date + req.file.filename;
     let {host_name, email, password,host_location, host_about, host_neighbourhood, host_listings_count} = req.body;
@@ -43,25 +38,15 @@ route.post('/create', Upload.single('host_picture'), catchAsync(async(req ,res) 
         }else res.sendStatus(400)
 }))
 
+
 route.get('/updateUser/:id', updateHostById)
 
-// route.put('/update/:id', (req,res)=>{  // use put when u want changa all data
-//     let user = users.findIndex((value)=>{value.id == req.params.id});
-//     upuser = {name: 'Ayman', dep: 'MERN'};
-//     user.name = upuser.name
-//     res.send(user)
-// })
-// route.delete('/delete/:id',(req,res) => {
-//     let id = req.params.id;
-//     let indx = users.findIndex((value)=> {return value.id == id});
-//     console.log(indx);
-//     if(indx != -1){
-//         users.splice(indx, 1)
-//         res.send('user deleted');
-//         return
-//     }
-//     res.send('Not Found');
-// })
+
+
+/**********************************************************************/
+// ----------------------------delete Hosts------------------------------
+route.delete('/:id',deleteHosts);
+
 
 
 module.exports = route;

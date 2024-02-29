@@ -9,6 +9,7 @@ const helmet =require('helmet');
 
 const hostRoute = require('./routes/hostRoute.js');
 const guestRoute = require('./routes/guestRoute.js');
+const placeRoute = require('./routes/placeRoutes.js')
 // 1) const mongoose
 const { connect } = require('mongoose');
 
@@ -24,7 +25,8 @@ app.use(express.urlencoded({extended: true})); // using when u send data by form
 app.use(helmet()); // to add more security your apps by setting various HTTP headers.
 
 app.use('/hosts' , hostRoute);
-app.use('/guests', guestRoute)
+app.use('/guests', guestRoute);
+app.use('/place', placeRoute);
 
 app.listen(port, ()=> console.log(`app listinig in port ${port}`))
 

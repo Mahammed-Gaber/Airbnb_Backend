@@ -51,7 +51,7 @@ exports.login = catchAsync(async(req, res, next) => {
         return res.status(400).send('Please provide email and password');
     }
     console.log('first step done');
-    
+
     //2) check if email exist and password correct
     const user = await Guest.findOne({email}).select('+password');
     console.log(user);
@@ -85,7 +85,7 @@ exports.protect = catchAsync(async(req, res, next) => {
     } catch (error) {
         return res.status(500).send(error.message)
     }
-    console.log(decoded);
+    // console.log(decoded);
     
     // 3) we have to check if user still exist
     const freshUser = await Guest.findById(decoded.id);
