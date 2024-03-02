@@ -1,6 +1,6 @@
 const Guest = require('../models/Guest');
 const catchAsync = require('../utils/catchAsync');
-// using jwt
+
 const jwt = require('jsonwebtoken');
 const { promisify } = require('util');
 
@@ -13,7 +13,6 @@ const signToken = id => {
 
 // auth security
 exports.signup = catchAsync( async(req ,res ,next) => {
-
     //1) get length all data, if at first time ant it not exist set count =0
     let dataLength = await Guest.findOne({}, {guest_id : 1}).sort({guest_id: -1}).limit(1);
     let count
@@ -52,7 +51,7 @@ exports.login = catchAsync(async(req, res, next) => {
     }
 
     //2) check if email exist and password correct
-    const user = await Guest.findOne({email}).select('+password');
+    const user = await Guest.findOne({email}).select('password');
     console.log(user);
     if (!user || !(await user.correctPassword(password, user.password))){
         return res.status(401).send('incorrect email or password');
@@ -84,7 +83,7 @@ exports.protect = catchAsync(async(req, res, next) => {
     } catch (error) {
         return res.status(500).send(error.message)
     }
-    
+
     // 3) we have to check if user still exist
     const freshUser = await Guest.findById(decoded.id);
     if (!freshUser) {
@@ -100,7 +99,6 @@ exports.protect = catchAsync(async(req, res, next) => {
     next();
 })
 
-
 exports.strect = (...roles) => {
     return (req, res, next) => {
         console.log(roles.includes(req.user.role));
@@ -109,4 +107,19 @@ exports.strect = (...roles) => {
         }
         next()
     }
+}
+
+exports.forgotPassword = catchAsync(async(req, res, next) => {
+    // 1) Get user from email
+    const user = await Guest.findOne({email : req.body.email})
+    if (!user) {
+        res.status(404).send('There is no user with email address.')
+    }
+    
+    // 2) Generate the random reset Token
+
+});
+
+exports.resetPassword = (req, res, next) => {
+
 }

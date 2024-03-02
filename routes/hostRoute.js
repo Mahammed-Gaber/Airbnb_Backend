@@ -17,15 +17,6 @@ const storeImage = multer.diskStorage({
 })
 const Upload = multer( {storage: storeImage} );
 
-// we have to add a middleware to reject any fack request
-route.param('id', (req,res,next,value)=> {
-    // req.id = req.params.id;
-    if(Number(value)) // id = value
-        next();
-    else
-        res.status(400).send('invalide id');
-})
-
 route.get('/', getAllHostes)
 route.get('/:id', getHostById)
 
@@ -41,10 +32,7 @@ route.post('/create', Upload.single('host_picture'), catchAsync(async(req ,res) 
         }else res.sendStatus(400)
 }))
 
-
 route.get('/updateUser/:id', updateHostById)
-
-
 
 /**********************************************************************/
 // ----------------------------delete Hosts------------------------------

@@ -24,6 +24,15 @@ app.use(express.json()); // using when u send data as json data
 app.use(express.urlencoded({extended: true})); // using when u send data by forms or application/x-www-form-urlencoded
 app.use(helmet()); // to add more security your apps by setting various HTTP headers.
 
+// we have to add a middleware to reject any fack request
+app.param('id', (req,res,next,value)=> {
+    if(Number(value))
+        next();
+    else
+        res.status(400).send('invalide id');
+})
+
+
 app.use('/hosts' , hostRoute);
 app.use('/guests', guestRoute);
 app.use('/place', placeRoute);

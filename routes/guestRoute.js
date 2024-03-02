@@ -19,10 +19,13 @@ const Upload = multer( {storage: storeImage} );
 
 router.post('/signup',Upload.single('guest_picture'), authGuestController.signup);
 router.post('/login', authGuestController.login)
+
+router.post('/forgotPasword', authGuestController.forgotPassword)
+router.post('/resetPassword', authGuestController.resetPassword)
+
 router.get('/showGuests', authGuestController.protect, authGuestController.strect('admin'), guestController.getAllGuests)
 router.put('/:id',authGuestController.protect, guestController.updateGuest);
 router.delete('/:id',authGuestController.protect, authGuestController.strect('admin', 'guest'), guestController.deleteGuest);
-
 
 
 

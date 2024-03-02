@@ -18,8 +18,6 @@ const updateGuest =catchAsync(async(req, res) => {
     if (!req.params._id) return res.status(404).send('User ID not found');
     let update = await Guest.findByIdAndUpdate(req.params.id,{
         guest_name: req.body.guest_name,
-        email: req.body.email,
-        password: req.body.password,
         guest_picture_url: req.body.guest_picture_url,
     },{new:true})
     if (!update) {

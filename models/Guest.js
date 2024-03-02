@@ -33,7 +33,7 @@ const guestSchema = mongoose.Schema({
         // if we wan't show password to client or in show data
         select : false
     },
-    PasswordConfirm : {
+    passwordConfirm : {
         type : String,
         required : [true, 'Please confirm your password'],
         validate : {
@@ -56,16 +56,15 @@ const guestSchema = mongoose.Schema({
 })
 
 
-guestSchema.pre('save', async function (next){
-
+guestSchema.pre('save', async(next) => {
     // it run if password is modified to hash it
     if(!this.isModified('password')) return next;
 
     // to hashing pass
-    this.password = await bcrypt.hash('password', 10);
+    this.password = await bcrypt.hash( this.password , 10);
 
     // to delete password confirm field
-    this.PasswordConfirm = undefined;
+    this.passwordConfirm = undefined;
     next()
 })
 
@@ -78,7 +77,7 @@ guestSchema.methods.correctPassword = async(candedatePassword, userPassword)=> {
 guestSchema.methods.changedPasswordAfter = (passwordChangedAt,JWTTiemstamp) => {
     if (passwordChangedAt) {
         const changedTimestamp = parseInt(passwordChangedAt.getTime() /1000, 10)
-        // return changedTimestamp > JWTTiemstamp;
+        return changedTimestamp > JWTTiemstamp;
     }
     return false;
 }
