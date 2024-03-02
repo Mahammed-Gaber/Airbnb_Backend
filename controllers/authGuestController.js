@@ -11,7 +11,6 @@ const signToken = id => {
     })
 }
 
-
 // auth security
 exports.signup = catchAsync( async(req ,res ,next) => {
 
@@ -69,7 +68,7 @@ exports.login = catchAsync(async(req, res, next) => {
 
 // protect route
 exports.protect = catchAsync(async(req, res, next) => {
-    // 1) getting token and check if token excist
+    // 1) getting token and check if token exist
     let token;
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
         token = req.headers.authorization.split(' ')[1]
@@ -94,9 +93,20 @@ exports.protect = catchAsync(async(req, res, next) => {
 
     // 4) check if user change password after the token was issued
     if(freshUser.changedPasswordAfter(freshUser.passwordChangedAt, decoded.iat)){
-        return res.status(401).send('User resently canged password! Please login again.')
+        return res.status(401).send('User resently changed password! Please login again.')
     };
 
-    req.Guest = freshUser;
+    req.user = freshUser;
     next();
 })
+
+
+exports.strect = (...roles) => {
+    return (req, res, next) => {
+        console.log(roles.includes(req.user.role));
+        if (!roles.includes(req.user.role)) {
+            return res.status(403).send('You do not have permission to perform this action!')
+        }
+        next()
+    }
+}

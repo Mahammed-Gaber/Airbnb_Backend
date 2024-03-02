@@ -21,6 +21,11 @@ const guestSchema = mongoose.Schema({
         lowercase : true,
         validate : [validator.isEmail , 'Please provide a valid email']
     },
+    role : {
+        type : String,
+        enum : ['admin', 'guest'],
+        default : 'guest'
+    },
     password:{
         type : String,
         required : [true, 'Please provide a valid password'],
@@ -73,7 +78,7 @@ guestSchema.methods.correctPassword = async(candedatePassword, userPassword)=> {
 guestSchema.methods.changedPasswordAfter = (passwordChangedAt,JWTTiemstamp) => {
     if (passwordChangedAt) {
         const changedTimestamp = parseInt(passwordChangedAt.getTime() /1000, 10)
-        console.log(changedTimestamp > JWTTiemstamp);
+        // return changedTimestamp > JWTTiemstamp;
     }
     return false;
 }
