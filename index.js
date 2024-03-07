@@ -9,7 +9,8 @@ const helmet =require('helmet');
 
 const hostRoute = require('./routes/hostRoute.js');
 const guestRoute = require('./routes/guestRoute.js');
-const placeRoute = require('./routes/placeRoutes.js')
+const placeRoute = require('./routes/placeRoutes.js');
+const bookingRoute = require('./routes/bookingRoute.js');
 // 1) const mongoose
 const { connect } = require('mongoose');
 
@@ -29,13 +30,14 @@ app.param('id', (req,res,next,value)=> {
     if(Number(value))
         next();
     else
-        res.status(400).send('invalide id');
+        res.status(400).send('id not number from middleware!');
 })
 
 
 app.use('/hosts' , hostRoute);
 app.use('/guests', guestRoute);
 app.use('/place', placeRoute);
+app.use('/booking', bookingRoute);
 
 app.listen(port, ()=> console.log(`app listinig in port ${port}`))
 

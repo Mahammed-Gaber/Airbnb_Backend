@@ -1,11 +1,11 @@
 const mongoose = require("mongoose");
 
 const placeSchema = mongoose.Schema({
-    place_id: {
-        type : Number,
-        unique: true,
-        default: 0
-    },
+    // place_id: {
+    //     type : Number,
+    //     unique: true,
+    //     default: 0
+    // },
     place_name: {
         type:String,
         minLength: 10,
@@ -49,10 +49,10 @@ const placeSchema = mongoose.Schema({
     createdAt:{
         type: Date,
         default: Date.now
-    },
+    }
 })
 
 const Place = mongoose.model('Place', placeSchema);
-Place.createIndexes({ place_id : 1 });
-Place.createIndexes({ place_name : 1 });
+// Place.createIndexes({ place_id : 1 });
+// Place.createIndexes({ place_name : 1 });
 module.exports = Place

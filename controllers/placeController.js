@@ -5,9 +5,9 @@ const Place = require("../models/Place");
 
     const createPlaces = async (_place_name, _description,_neighborhood_overview , _location, _latitude,_longitude ,_property_type,_room_type,_accommodates,_bedrooms,_beds,_amenities,_price,_has_availability,_license,_instant_bookable,_host_id,_review_id,_createdAt, _place_picture)=> {
         try {
-            let placeLength = await Place.find() ;
+            // let placeLength = await Place.find() ;
             let data = await Place.create({
-                place_id : placeLength.length +1,
+                // place_id : placeLength.length +1,
                 place_name:_place_name,
                 description : _description, 
                 neighborhood_overview: _neighborhood_overview, 

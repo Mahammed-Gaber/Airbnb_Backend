@@ -18,17 +18,11 @@ const Storage = multer.diskStorage({
 
 const upload = multer({ storage: Storage });
 
-// ------------------------Entery point-------------------------------------
-
-router.get('/', (req, res) => {
-    res.send('Welcome....');
-})
-
 
 /***********************************************************************************************/
 // ------------------------------------------Creat Places------------------------------------------------
-    router.post('/create-place', upload.single('place_picture'), async (req, res) => {
-        let place_picture = new Date + req.file.filename;
+    router.post('/create-place', async (req, res) => {
+        let place_picture = new Date
     try {
         const {place_name,description,neighborhood_overview,location,latitude,longitude,property_type,room_type,accommodates,bedrooms,beds,amenities,price,has_availability,license,instant_bookable,host_id,review_id,createdAt} = req.body;
         let data = await placeController.createPlaces(place_name,description,neighborhood_overview,location,latitude,longitude,property_type,room_type,accommodates,bedrooms,beds,amenities,price,has_availability,license,instant_bookable,host_id,review_id,createdAt,place_picture);
