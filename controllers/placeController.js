@@ -1,7 +1,5 @@
 const Place = require("../models/Place");
 
-// /********************************************************************************************* */
-// // -------------------------------Creat Places-----------------------------------------------------
 
     const createPlaces = async (_place_name, _description,_neighborhood_overview , _location, _latitude,_longitude ,_property_type,_room_type,_accommodates,_bedrooms,_beds,_amenities,_price,_has_availability,_license,_instant_bookable,_host_id,_review_id,_createdAt, _place_picture)=> {
         try {
@@ -37,9 +35,6 @@ const Place = require("../models/Place");
         }
     
     }
-/******************************************************* */
-// -----------------------Shwo Places---------------------------------
-
 
 const getAllPlaces = async () => {
     try {
@@ -54,9 +49,6 @@ const getAllPlaces = async () => {
         console.log(e);
     }
 };
-
-/******************************************************* */
-// -----------------------update Places---------------------------------
 
 const updatePlaces =(req, res) => {
     Place.findByIdAndUpdate(req.params.id,{
@@ -89,9 +81,6 @@ const updatePlaces =(req, res) => {
     })
 };
 
-/******************************************************* */
-// -----------------------delete Places---------------------------------
-
 const deletePlaces =(req, res) => {
     Place.findByIdAndDelete(req.params.id,{
         place_name: req.body.place_name,
@@ -122,7 +111,5 @@ const deletePlaces =(req, res) => {
     })
 };
 
-/******************************************************* */
-// /*************----Exports----************************ */
 
 module.exports = {createPlaces,getAllPlaces,updatePlaces,deletePlaces};

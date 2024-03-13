@@ -23,12 +23,11 @@ router.post('/login', authGuestController.login)
 router.post('/forgotPasword', authGuestController.forgotPassword)
 router.post('/resetPassword', authGuestController.resetPassword)
 
-router.get('/showGuests', authGuestController.protect, authGuestController.strect('admin'), guestController.getAllGuests)
-router.put('/:id',authGuestController.protect, guestController.updateGuest);
-router.delete('/:id',authGuestController.protect, authGuestController.strect('admin', 'guest'), guestController.deleteGuest);
+router.use(authGuestController.protect);
 
-
-
+router.get('/showGuests',  authGuestController.restrictTo('admin'), guestController.getAllGuests)
+router.put('/:id', authGuestController.restrictTo('guest'),guestController.updateGuest);
+router.delete('/:id', authGuestController.restrictTo('admin', 'guest'), guestController.deleteGuest);
 
 
 module.exports= router;

@@ -1,11 +1,11 @@
 const mongoose = require('mongoose')
 
 const BookingSchema = mongoose.Schema({
-    // booking_id: {
-    //     type : Number,
-    //     unique: true,
-    //     default: 0
-    // },
+    booking_id: {
+        type : Number,
+        unique: true,
+        default: 2
+    },
     place: {
         type: mongoose.Types.ObjectId,
         ref: 'Place',
@@ -39,7 +39,6 @@ const BookingSchema = mongoose.Schema({
 });
 
 BookingSchema.pre('/^find/', (next) => {
-    console.log('her');
     this.populate('guest').populate({
         path: 'place',
         select: 'name'

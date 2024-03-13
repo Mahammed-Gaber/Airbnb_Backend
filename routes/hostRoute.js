@@ -1,11 +1,10 @@
 const express = require('express');
-const { createHost, getAllHostes, getHostById, updateHostById, deleteHosts } = require('../controllers/hostController.js');
 const multer = require('multer');
-const Host = require('../models/Host.js');
-const path = require('path');
-const catchAsync = require('../utils/catchAsync.js');
+const path =require('path');
+const router = express.Router();
+const hostController = require('../controllers/hostController');
+const authHostController = require('../controllers/authHostController');
 
-const route = express.Router();
 // Upload Image
 const storeImage = multer.diskStorage({
     destination : (req, file, callback)=> {
@@ -17,27 +16,15 @@ const storeImage = multer.diskStorage({
 })
 const Upload = multer( {storage: storeImage} );
 
-route.get('/', getAllHostes)
-route.get('/:id', getHostById)
+router.post('/signup', Upload.single('host_picture'), authHostController.signUp);
+router.post('/signup', authHostController.login);
 
-route.post('/create', Upload.single('host_picture'), catchAsync(async(req ,res) => {
-    let host_picture = new Date + req.file.filename;
-    let {host_name, email, password,host_location, host_about, host_neighbourhood, host_listings_count} = req.body;
-        let data = await createHost(host_name, email, password, host_location, host_about, host_picture, host_neighbourhood, host_listings_count);
-        if (data) {
-            res.status(201).json({
-                status : 'success',
-                host : data
-            })
-        }else res.sendStatus(400)
-}))
+router.use(authHostController.protect);
 
-route.get('/updateUser/:id', updateHostById)
-
-/**********************************************************************/
-// ----------------------------delete Hosts------------------------------
-route.delete('/:id',deleteHosts);
+router.get('/', hostController.getAllHostes);
+router.get('/:id', hostController.getHostById);
+router.get('/:id', hostController.updateHostById);
+router.delete('/:id',hostController.deleteHost);
 
 
-
-module.exports = route;
+module.exports = router;

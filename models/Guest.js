@@ -4,11 +4,6 @@ const bcrypt = require('bcrypt');
 
 
 const guestSchema = mongoose.Schema({
-    guest_id: {
-        type : Number,
-        unique: true,
-        default: 0
-    },
     guest_name : {
         type: String,
         required: true,

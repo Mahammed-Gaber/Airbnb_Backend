@@ -1,95 +1,59 @@
 const Host = require("../models/Host");
+const catchAsync = require('../utils/catchAsync');
 
 
-const createHost = async (_host_name, _email, _Pass, _host_location, _host_about, _host_picture_url, _host_neighbourhood, _host_listings_count)=> {
-    try {
-        let hostLength = await Host.find({}, {host_id : 1}).sort({ host_id: -1}).limit(1)
-        let data = await Host.create({
-            host_id : hostLength +1,
-            host_name:_host_name,
-            email : _email, 
-            password: _Pass, 
-            host_location : _host_location, 
-            host_about: _host_about, 
-            host_picture_url: _host_picture_url, 
-            host_neighbourhood : _host_neighbourhood, 
-            host_listings_count: _host_listings_count,
-            })
-            if (data) {
-                return data
-            }else console.log('Error in host data');
-    } catch (error) {
-        console.log(error.message);
-    }
-}
+const getAllHostes = catchAsync(async(req, res)=>{
+        let hosts = await Host.find({});
+        if (!hosts) return res.status(404).send('Error on get Hosts');
 
-//Get All Hosts
-const getAllHostes =async (req, res)=>{
-    // res.set('headers', '*')
-    try {
-        let data = await Host.find({});
-        console.log(data);
-        if (data) {
-            res.status(200).json({
-                status : 'success',
-                hosts : data
-            })
-        }else console.log('Error in Host Data');
-        res.status(200).send(users);
-    } catch (error) {
-        console.log(error.message);
-    }
-}
+        res.status(200).json({
+            status : 'success',
+            results : hosts.length,
+            data : hosts
+        });
+})
 
-// git host by ID
-const getHostById = async(req, res) => {
-    try {
-        let {id} = req.params;
-        let host = await Host.findOne({host_id : id});
-        if(host)
-            res.status(200).send(user);
-        else
-            res.sendStatus(204)
-    } catch (error) {
-        console.log(error.message);
-    }
-}
+const getHostById = catchAsync(async(req, res) => {
+    if (!req.params.id) return res.status(404).send('User ID not found');
 
+    let host = await Host.findById(req.params.id);
+    if (!host) return res.status(404).send('User not found!');
+    res.status(200).json({
+        status: 'success',
+        data: host
+    })
+});
 
-/******************************************************* */
-// -----------------------update Hosts---------------------------------
-const updateHostById  = async(req, res) => {
-    await Host.findByIdAndUpdate(req.params.id,{
+const updateHostById  = catchAsync(async(req, res) => {
+    const newHost = await Host.findByIdAndUpdate(req.params.id,{
         host_name: req.body.host_name,
-        email: req.body.email,
-        password: req.body.password,
         host_location: req.body.host_location,
         host_about: req.body.host_about,
         host_neighbourhood: req.body.host_neighbourhood,
         host_listings_count: req.body.host_listings_count,
         host_picture: req.body.host_picture,
-    },{new:true})
-    .then(data =>{
-        res.send("update done ...." + data);
-        return data;
-    }).catch(err =>{
-        console.log(err)
+    },{
+        new:true,
+        runValidatours : true
+    });
+
+    if(!newHost) return res.status(400).send('Error on Updata Host');
+
+    res.status(200).json({
+        status : 'success',
+        data : newHost
     })
-};
+});
 
-/******************************************************* */
-// -----------------------delete Hosts---------------------------------
+const deleteHost = catchAsync(async(req, res) => {
+    if (!req.params.id) return res.status(404).send('User ID not found');
 
-const deleteHosts =async (req, res) => {
-    await Host.findByIdAndDelete(req.params.id,{
-        email: req.body.email
-    })
-    .then(data =>{
-        res.send("deleteng  done" + data);
-    }).catch(err =>{
-        console.log(err)
-    })
-};
+    let deleteUser = await Host.findByIdAndDelete(req.params.id);
+
+    if (!deleteUser) return res.status(404).send('User not found!');
+
+    res.sendStatus(204);
+});
 
 
-module.exports = {getAllHostes, getHostById, createHost, updateHostById, deleteHosts};
+module.exports = {getAllHostes, getHostById,updateHostById, deleteHost};

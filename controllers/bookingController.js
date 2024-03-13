@@ -3,10 +3,10 @@ const Place = require('../models/Place');
 const catchAsync = require('../utils/catchAsync');
 
 
-exports.getCheckoutSession = catchAsync(async(req, res, next) => {
+// exports.getCheckoutSession = catchAsync(async(req, res, next) => {
 
-    next();
-})
+//     next();
+// })
 
 exports.createBookingCheckout = catchAsync(async(req, res, next) => {
     const {place, guest, price} = req.query;
@@ -15,7 +15,7 @@ exports.createBookingCheckout = catchAsync(async(req, res, next) => {
 
     let newBooking = await Booking.create({place, guest, price})
     if (!newBooking) {
-        res.send('bad')
+        res.sendStatus(400);
     }
     res.status(201).json({
         status: 'success',
@@ -28,7 +28,7 @@ exports.myPlaces = catchAsync(async(req, res, next)=> {
     // 1) find user and all places belongs to user from booking 
     const bookings = await Booking.find({guest : req.user._id});
 
-    // 2)find places by ids
+    // 2)find places by IDs
     const placeIDs = bookings.map(el => el.place);
     const places =await Place.find({_id : {$in: placeIDs}});
 
