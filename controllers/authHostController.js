@@ -69,7 +69,7 @@ exports.protect = catchAsync(async(req, res, next) => {
     }
 
     // 3) we have to check if user still exist
-    const freshUser = await Guest.findById(decoded.id);
+    const freshUser = await Host.findById(decoded.id);
     if (!freshUser) {
         return res.status(400).send('user logging does no longer exist');
     }
