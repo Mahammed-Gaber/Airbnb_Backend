@@ -4,76 +4,27 @@ const router = express.Router();
 const multer = require('multer');
 const path = require('path');
 
-// ------------------------Upload file---------------------------
+const authHostController = require('../controllers/authHostController');
 
-const Storage = multer.diskStorage({
-    destination: (req, file, callback) => {
-        callback(null, path.join(__dirname, "..","/upload"));
+// Upload ur imgs 
+const storeImage = multer.diskStorage({
+    destination : (req, file, callback)=> {
+        callback(null, path.join(__dirname, '..', 'images'))
     },
     filename: (req, file, callback) => {
-        callback(null,file.originalname);
+        callback(null, file.originalname);
     }
 })
+const Upload = multer( {storage: storeImage} );
 
-const upload = multer({ storage: Storage });
 
+router.post('/create-place',Upload.single('host_picture'), placeController.createPlace);
 
-/***********************************************************************************************/
-// ------------------------------------------Creat Places------------------------------------------------
-    router.post('/create-place', async (req, res) => {
-        let place_picture = new Date
-    try {
-        const {place_name,description,neighborhood_overview,location,latitude,longitude,property_type,room_type,accommodates,bedrooms,beds,amenities,price,has_availability,license,instant_bookable,host_id,review_id,createdAt} = req.body;
-        let data = await placeController.createPlaces(place_name,description,neighborhood_overview,location,latitude,longitude,property_type,room_type,accommodates,bedrooms,beds,amenities,price,has_availability,license,instant_bookable,host_id,review_id,createdAt,place_picture);
-        if (data != "error") {
-            res.send('creating Done...'+data);
-            console.log(data);
-            return data
-        }
-        else {
-            res.status
-            (403).send("not found");
-        }
-    }
-    catch (e) {
-        res.status(500).send('server error');
-        console.log(e);
-    }
-}
-)
+router.use(authHostController.protect)
 
-/****************************************************************************/
-// ----------------------------Shwo All Places------------------------------
-router.get("/getAllPlaces", async (req, res) => {
-
-    try {
-        let data = await placeController.getAllPlaces();
-        if (data != "error") {
-            res.json({
-                Places: data,
-                msg: "ok",
-                status: 200
-            });
-            console.log(data)
-        }
-        else {
-            res.status(403).send("not found");
-        }
-    }
-    catch (e) {
-        res.status(500).send('server error');
-        console.log(e)
-    }
-
-})
-
-/**********************************************************************/
-// ----------------------------update Places------------------------------
-router.put('/:id',placeController.updatePlaces);
-
-/**********************************************************************/
-// ----------------------------delete Places------------------------------
-router.delete('/:id',placeController.deletePlaces);
+router.get("/getAllPlaces", authHostController.restrictTo('host', 'admin'), placeController.getAllPlaces);
+router.put('/:id', Upload.single('pictures_url') ,authHostController.restrictTo('host') ,placeController.updatePlaces);
+router.delete('/:id',authHostController.restrictTo('host', 'admin') ,placeController.deletePlaces);
 
 
 

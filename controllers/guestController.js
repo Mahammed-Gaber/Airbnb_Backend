@@ -12,15 +12,12 @@ const getAllGuests = catchAsync(async (req , res) => {
         guests : guests
         }
     });
-})
+});
 
 const updateGuest =catchAsync(async(req, res) => {
     if (!req.params.id) return res.status(404).send('User ID not found');
 
-    let update = await Guest.findByIdAndUpdate(req.params.id,{
-        guest_name: req.body.guest_name,
-        guest_picture_url: req.body.guest_picture_url,
-    },{
+    let update = await Guest.findByIdAndUpdate(req.params.id, req.body,{
         new:true,
         runValidatours : true
     });
@@ -33,12 +30,13 @@ const updateGuest =catchAsync(async(req, res) => {
 const deleteGuest = catchAsync( async(req, res) => {
     // 1) check if id exist
     if (!req.params.id) return res.status(404).send('User ID not found');
+
     // 2) delete user
-    let deletedUser = await Guest.findByIdAndDelete(req.params._id)
-    if (!deletedUser) res.status(400).send('User not found!');
+    let deletedUser = await Guest.findByIdAndDelete(req.params.id)
+    if (!deletedUser) return res.status(404).send('User not found!');
 
     // 3)everything ok, send done
-    res.status(204).send('User deleted successsfully!');
+    res.sendStatus(204);
 });
 
 module.exports = { getAllGuests, updateGuest, deleteGuest }

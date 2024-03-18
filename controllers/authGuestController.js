@@ -9,32 +9,43 @@ const signToken = id => {
     return jwt.sign({ id }, process.env.JWT_SECRET , {
         expiresIn : process.env.JWT_EXPIRES_IN
     })
-}
+};
 
-// auth security
-exports.signup = catchAsync( async(req ,res ,next) => {
-    //1) if everything is good create new user
-    let {_name, _email, _password,_pass_confirm, _guest_picture, _passwordChangedAt} = req.body;
-    let newUser = await Guest.create({
-        guest_name : _name,
-        email : _email,
-        password: _password,
-        PasswordConfirm : _pass_confirm,
-        guest_picture_url: _guest_picture,
-        passwordChangedAt: _passwordChangedAt
-    });
-    if (!newUser) {
-        res.status(400).send('Error in create User')
+// Send token via cookie
+const createSendToken = (user, statusCode, res) => {
+    const token = signToken(user._id);
+
+    const cookieOptions = {
+        expires : new Date(
+            Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
+            ),
+        httpOnly : true
     }
+    if(process.env.NODE_ENV === 'production') cookieOptions.secure = true;
 
-    //2) create a token and every token content Header, payload, signature
-    const token = signToken(newUser._id)
+    res.cookie('jwt', token , cookieOptions)
 
-    res.status(201).json({
+    // Remove password from data 
+    user.password = undefined;
+
+    res.status(statusCode).json({
         status: 'success',
         token,
-        user : newUser
-    })
+        date : {
+            user
+        }
+    });
+}
+
+exports.signup = catchAsync( async(req ,res) => {
+    //1) if everything is good create new user
+    let newUser = await Guest.create(req.body);
+
+    if (!newUser) {
+        return res.status(400).send('Error in create User')
+    };
+
+    createSendToken(newUser, 201, res);
 });
 
 exports.login = catchAsync(async(req, res, next) => {
@@ -46,26 +57,25 @@ exports.login = catchAsync(async(req, res, next) => {
 
     //2) check if email exist and password correct
     const user = await Guest.findOne({email}).select('password');
-    console.log(user);
     if (!user || !(await user.correctPassword(password, user.password))){
         return res.status(401).send('incorrect email or password');
     }
 
-    // 3) everything okay send token
-    const token = signToken(user._id);
-    res.status(200).json({
-        status : 'success',
-        token
-    })
+    // 3) everything okay send token via cookies
+    createSendToken(user, 201, res);
 })
 
 // protect route
 exports.protect = catchAsync(async(req, res, next) => {
     // 1) getting token and check if token exist
     let token;
-    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-        token = req.headers.authorization.split(' ')[1]
-    }
+    // if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+    //     token = req.headers.authorization.split(' ')[1]
+    // }
+    if(req.cookies.jwt){
+        token = req.cookies.jwt
+    };
+
     if (!token) {
         return res.status(401).send('You are not logged in , Please login to get access')
     }

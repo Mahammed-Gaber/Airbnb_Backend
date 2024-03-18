@@ -59,10 +59,11 @@ const hostSchema = mongoose.Schema({
     host_since: {
         type: Date,
         default: Date.now
-    }
+    },
+    passwordChangedAt : Date,
 })
 
-hostSchema.pre('save', async(next) => {
+hostSchema.pre('save', async function (next) {
     if (!this.isModified('password')) return next;
     this.password = bcrypt.hash('password', 10);
 
@@ -73,6 +74,19 @@ hostSchema.pre('save', async(next) => {
     this.passwordConfirm = undefined;
     next();
 });
+
+hostSchema.methods.correctPassword = async(candedatePassword, userPassword)=> {
+    return await bcrypt.compare(candedatePassword, userPassword);
+}
+
+// add method check if password changed
+hostSchema.methods.changedPasswordAfter = (passwordChangedAt,JWTTiemstamp) => {
+    if (passwordChangedAt) {
+        const changedTimestamp = parseInt(passwordChangedAt.getTime() /1000, 10)
+        return changedTimestamp > JWTTiemstamp;
+    }
+    return false;
+}
 
 const Host = mongoose.model('Host', hostSchema);
 

@@ -56,4 +56,4 @@ const deleteHost = catchAsync(async(req, res) => {
 });
 
 
-module.exports = {getAllHostes, getHostById,updateHostById, deleteHost};
+module.exports = {getAllHostes, getHostById, updateHostById, deleteHost};

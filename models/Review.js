@@ -1,26 +1,26 @@
-import mongoose, { Schema } from "mongoose";
+const mongoose = require('mongoose');
 
-const reviewSchema = Schema({
-    review_id : {
-        type : Number,
-        unique: true,
-        default: 0
-    },
+const reviewSchema = mongoose.Schema({
     comments : String,
     reviewer_id:{
         type: mongoose.Types.ObjectId,
-        ref: 'Guest'
+        ref: 'Guest',
+        required : [true, 'Review must belong to a Guest!']
+    },
+    place_id:{
+        type: mongoose.Types.ObjectId,
+        ref: 'Place',
+        required : [true, 'Review must belong to a Place!']
     },
     rating: {
         type: Number,
-        required: true
+        default: 0
     },
-    date:{
+    createdAt:{
         type: Date,
         default: Date.now
-    }, 
-})
+    }
+});
 
 const Review = mongoose.model('Review', reviewSchema);
-Review.createIndexes({ review_id : 1 });
 module.exports = Review;

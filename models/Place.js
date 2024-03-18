@@ -1,51 +1,61 @@
 const mongoose = require("mongoose");
 
 const placeSchema = mongoose.Schema({
-    // place_id: {
-    //     type : Number,
-    //     unique: true,
-    //     default: 0
-    // },
     place_name: {
         type:String,
         minLength: 10,
-        maxLength: 20
+        maxLength: 20,
+        required : [true, 'A Place must have a name'],
+        trim : true
     },
     description:{
         type:String,
         minLength: 20,
-        maxLength: 100
+        maxLength: 100,
+        required : [true, 'A Place must have a description'],
+        trim : true
     },
-    neighborhood_overview: String,
-    picture_url: String,
+    neighborhood_overview: {
+        type : String,
+        required : [true, 'A Place must have an overview'],
+        trim : true
+    },
+    pictures_url: [String],
+    imageCover : {
+        type: String,
+        required : [true, 'A Place must have a cover image']
+    },
     location: {
         type:String,
-        minLength: 20,
+        tirm: true
     },
     latitude: Number,
     longitude: Number,
     property_type: [{
-        type:String
+        type:String,
+        trim : true
         }],
     room_type: String,
     accommodates: Number,
     bedrooms: Number,
     beds: Number,
     amenities: [{
-        type:String 
+        type:String,
+        tirm: true
         }],
-    price: String,
+    price: {
+        type: Number,
+        required : [true, 'A Place must have a price']
+    },
     has_availability: String,
     license: String,
     instant_bookable: String,
     host_id:{
         type: mongoose.Types.ObjectId,
-        ref: 'Host'
+        ref: 'Host',
+        required : [true, 'A Place must belong to a Host']
     },
-    review_id:{
-        type: mongoose.Types.ObjectId,
-        ref: 'Review'
-    },
+    startDates: [Date],
     createdAt:{
         type: Date,
         default: Date.now
@@ -53,6 +63,4 @@ const placeSchema = mongoose.Schema({
 })
 
 const Place = mongoose.model('Place', placeSchema);
-// Place.createIndexes({ place_id : 1 });
-// Place.createIndexes({ place_name : 1 });
 module.exports = Place

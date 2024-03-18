@@ -10,6 +10,31 @@ const signToken = id => {
     })
 }
 
+const createSendToken = (user, statusCode, res) => {
+    const token = signToken(user._id);
+
+    const cookieOptions = {
+        expires : new Date(
+            Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
+            ),
+        httpOnly : true
+    }
+    if(process.env.NODE_ENV === 'production') cookieOptions.secure = true;
+
+    res.cookie('jwt', token, cookieOptions);
+
+    //Remove password to add more secure
+    user.password = undefined;
+
+    res.status(statusCode).json({
+        status : 'success',
+        token,
+        data : {
+            user
+        }
+    });
+}
+
 exports.signUp = catchAsync(async(req,res)=> {
     let {_host_name, _email, _Pass, _host_location, _host_about, _host_picture_url, _host_neighbourhood, _host_listings_count} = req.body;
     let newHost = await Host.create({
@@ -22,10 +47,12 @@ exports.signUp = catchAsync(async(req,res)=> {
         host_neighbourhood : _host_neighbourhood, 
         host_listings_count: _host_listings_count,
     });
+
     if (!newHost) {
         return res.status(400).send('Error on create Host!')
     }
 
+    createSendToken(newHost, 201, res);
 });
 
 exports.login = catchAsync(async(req, res, next) => {
@@ -42,20 +69,20 @@ exports.login = catchAsync(async(req, res, next) => {
         return res.status(401).send('incorrect email or password');
     }
 
-    // 3) everything okay send token
-    const token = signToken(user._id);
-    res.status(200).json({
-        status : 'success',
-        token
-    })
+    // 3) everything okay send token via cookies
+    createSendToken(user, 201, res);
 })
 
 exports.protect = catchAsync(async(req, res, next) => {
     // 1) getting token and check if token exist
     let token;
-    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-        token = req.headers.authorization.split(' ')[1]
-    }
+    // if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+    //     token = req.headers.authorization.split(' ')[1]
+    // }
+    if(req.cookies.jwt) {
+        token = req.cookies.jwt
+    };
+
     if (!token) {
         return res.status(401).send('You are not logged in , Please login to get access')
     }
@@ -82,3 +109,12 @@ exports.protect = catchAsync(async(req, res, next) => {
     req.user = freshUser;
     next();
 })
+
+exports.restrictTo = (...roles) => {
+    return (req, res, next) => {
+        if (!roles.includes(req.user.role)) {
+            return res.status(403).send('You do not have permission to perform this action!')
+        }
+        next();
+    }
+};

@@ -1,11 +1,6 @@
 const mongoose = require('mongoose')
 
 const BookingSchema = mongoose.Schema({
-    booking_id: {
-        type : Number,
-        unique: true,
-        default: 2
-    },
     place: {
         type: mongoose.Types.ObjectId,
         ref: 'Place',
@@ -22,11 +17,11 @@ const BookingSchema = mongoose.Schema({
     },
     arrival_date: {
         type: Date,
-        // required: true
+        required : [true, 'Booking must have an arrival date!']
     },
     departure_date: {
         type: Date,
-        // required: true
+        required : [true, 'Booking must have a depature date!']
     },
     paid: {
         type: Boolean,
@@ -43,8 +38,10 @@ BookingSchema.pre('/^find/', (next) => {
         path: 'place',
         select: 'name'
     })
-})
+});
 
+//Update the index to find duplicate reservations with the same date for the same place
+BookingSchema.index({ place: 1, arrival_date: 1, departure_date: 1 }, { unique: true });
 
 const Booking = mongoose.model('Booking', BookingSchema);
 module.exports = Booking;

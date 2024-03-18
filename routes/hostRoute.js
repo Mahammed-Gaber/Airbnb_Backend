@@ -16,8 +16,8 @@ const storeImage = multer.diskStorage({
 })
 const Upload = multer( {storage: storeImage} );
 
-router.post('/signup', Upload.single('host_picture'), authHostController.signUp);
-router.post('/signup', authHostController.login);
+router.post('/signup', Upload.single('host_picture_url'), authHostController.signUp);
+router.post('/login', authHostController.login);
 
 router.use(authHostController.protect);
 

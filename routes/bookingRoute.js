@@ -6,8 +6,8 @@ const authGuestController = require('../controllers/authGuestController');
 router.use(authGuestController.protect);
 
 // router.get('/checkout-session', bookingController.getCheckoutSession)
-router.get('/', bookingController.createBookingCheckout)
-router.get('/my-places', bookingController.myPlaces)
+router.post('/', bookingController.createBookingCheckout)
+router.get('/my-places',authGuestController.restrictTo('guest', 'admin'), bookingController.myPlaces)
 
 
 module.exports = router;

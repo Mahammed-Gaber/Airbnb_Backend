@@ -7,7 +7,6 @@ const guestSchema = mongoose.Schema({
     guest_name : {
         type: String,
         required: true,
-        unique: true
     },
     email: {
         type: String,
@@ -38,20 +37,21 @@ const guestSchema = mongoose.Schema({
             message : 'Password is not the same'
         }
     },
-    guest_since: {
-        type: Date,
-        default: Date.now
-    },
     guest_picture_url: String,
     guest_verifications: [{
         type: String
     }],
     guest_identity_verified: String,
+    guest_since: {
+        type: Date,
+        default: Date.now
+    },
     passwordChangedAt : Date
 })
 
 
-guestSchema.pre('save', async(next) => {
+
+guestSchema.pre('save', async function (next) {
     // it run if password is modified to hash it
     if(!this.isModified('password')) return next;
 
@@ -63,7 +63,6 @@ guestSchema.pre('save', async(next) => {
     next()
 })
 
-// hey! dont forget async & await with hassing
 guestSchema.methods.correctPassword = async(candedatePassword, userPassword)=> {
     return await bcrypt.compare(candedatePassword, userPassword);
 }
