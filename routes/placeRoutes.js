@@ -18,22 +18,13 @@ const storeImage = multer.diskStorage({
 const Upload = multer( {storage: storeImage} );
 
 
-router.post('/create-place',Upload.single('host_picture'), placeController.createPlace);
 
 router.use(authHostController.protect)
 
-router.get("/getAllPlaces", authHostController.restrictTo('host', 'admin'), placeController.getAllPlaces);
+router.post('/create-place',Upload.single('host_picture'), placeController.createPlace);
+router.get("/getAllPlaces", placeController.getAllPlaces);
 router.put('/:id', Upload.single('pictures_url') ,authHostController.restrictTo('host') ,placeController.updatePlaces);
 router.delete('/:id',authHostController.restrictTo('host', 'admin') ,placeController.deletePlaces);
-
-
-
-
-
-
-
-
-/**********************************************************/
 
 
 module.exports = router;

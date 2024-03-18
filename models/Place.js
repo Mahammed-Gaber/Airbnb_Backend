@@ -4,14 +4,12 @@ const placeSchema = mongoose.Schema({
     place_name: {
         type:String,
         minLength: 10,
-        maxLength: 20,
         required : [true, 'A Place must have a name'],
         trim : true
     },
     description:{
         type:String,
         minLength: 20,
-        maxLength: 100,
         required : [true, 'A Place must have a description'],
         trim : true
     },

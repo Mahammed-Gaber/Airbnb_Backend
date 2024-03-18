@@ -3,7 +3,6 @@ const catchAsync = require("../utils/catchAsync");
 
 
 const createPlace = catchAsync(async(req, res)=> {
-    let {host_id} = req.query;
     let {place_name, description,neighborhood_overview ,pictures_url, imageCover,
         location, latitude,longitude ,property_type,room_type, accommodates,bedrooms,
         beds,amenities,price,has_availability,license,instant_bookable,startDates} = req.body
@@ -27,7 +26,7 @@ const createPlace = catchAsync(async(req, res)=> {
         has_availability: has_availability,
         license: license,
         instant_bookable: instant_bookable,
-        host_id: host_id,
+        host_id: req.user._id,
         startDates: startDates,
     });
 
@@ -35,7 +34,9 @@ const createPlace = catchAsync(async(req, res)=> {
 
     res.status(201).json({
         status : 'success',
-        place : newPlace
+        data : {
+            newPlace
+        }
     })
 });
 
