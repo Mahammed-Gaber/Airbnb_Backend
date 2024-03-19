@@ -36,14 +36,14 @@ const createSendToken = (user, statusCode, res) => {
 }
 
 exports.signUp = catchAsync(async(req,res)=> {
-    let {_host_name, _email, _Pass, _host_location, _host_about, _host_picture_url, _host_neighbourhood, _host_listings_count} = req.body;
+    let {_host_name, _email, _Pass, _host_location, _host_about, _host_neighbourhood, _host_listings_count} = req.body;
     let newHost = await Host.create({
         host_name:_host_name,
         email : _email, 
         password: _Pass, 
         host_location : _host_location, 
         host_about: _host_about, 
-        host_picture_url: _host_picture_url, 
+        host_picture_url: req.file.filename, 
         host_neighbourhood : _host_neighbourhood, 
         host_listings_count: _host_listings_count,
     });

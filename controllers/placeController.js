@@ -3,9 +3,9 @@ const catchAsync = require("../utils/catchAsync");
 
 
 const createPlace = catchAsync(async(req, res)=> {
-    let {place_name, description,neighborhood_overview ,pictures_url, imageCover,
-        location, latitude,longitude ,property_type,room_type, accommodates,bedrooms,
-        beds,amenities,price,has_availability,license,instant_bookable,startDates} = req.body
+    let {place_name, description,neighborhood_overview, imageCover, pictures_url,location,
+        latitude,longitude ,property_type,room_type, accommodates,bedrooms,
+        beds,amenities,price,has_availability,license,instant_bookable,startDates} = req.body;
 
     let newPlace = await Place.create({
         place_name: place_name,
@@ -41,13 +41,13 @@ const createPlace = catchAsync(async(req, res)=> {
 });
 
 const getAllPlaces = catchAsync(async(req, res) => {
-    //Build Query
-    // 1) filtering
+    //BUILD QUERY
+    // 1A) Filtering
     let queryObj = {...req.query};
     let excludedFields = ['page', 'sort', 'limit', 'fields'];
     excludedFields.forEach(el => delete queryObj[el]);
 
-    // 2) advanced filtering
+    // 2A) Advanced filtering
     let queryString = JSON.stringify(queryObj);
     queryString = queryString.replace(/\b(gt|gte|lt|lte)\b/g , match => `$${match}`);
 
@@ -64,9 +64,29 @@ const getAllPlaces = catchAsync(async(req, res) => {
     // 2) Field limiting
     if (req.query.fields) {
         const fields = req.query.fields.split(',').join(' ');
+        console.log(fields);
         query= query.select(fields);
     }else{
         query = query.select('-__v');
+    }
+
+    // 3) Pagination
+    if(req.query.page) {
+        const page = req.query.page * 1 || 1;
+        const limit = req.query.limit * 1 || 10;
+        const skip = (page - 1) * limit;
+
+        console.log(page, limit, skip);
+
+        query.skip(skip).limit(limit);
+
+        const numPlaces = await Place.countDocuments();
+
+        if (skip> numPlaces) {
+            return res.status(404).send('This Page does not exist!')
+        }
+    }else{
+        query.skip(0).limit(10);
     }
 
     // Execute Query
