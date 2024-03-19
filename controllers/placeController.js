@@ -71,22 +71,17 @@ const getAllPlaces = catchAsync(async(req, res) => {
     }
 
     // 3) Pagination
+    const page = req.query.page * 1 || 1;
+    const limit = req.query.limit * 1 || 10;
+    const skip = (page - 1) * limit;
+
+    query.skip(skip).limit(limit);
+
     if(req.query.page) {
-        const page = req.query.page * 1 || 1;
-        const limit = req.query.limit * 1 || 10;
-        const skip = (page - 1) * limit;
-
-        console.log(page, limit, skip);
-
-        query.skip(skip).limit(limit);
-
         const numPlaces = await Place.countDocuments();
-
         if (skip> numPlaces) {
             return res.status(404).send('This Page does not exist!')
         }
-    }else{
-        query.skip(0).limit(10);
     }
 
     // Execute Query
