@@ -60,5 +60,13 @@ const placeSchema = mongoose.Schema({
     }
 })
 
+placeSchema.pre('find', function (next) {
+    this.populate({
+        path: 'host_id',
+        select: 'host_name'
+    });
+    next();
+});
+
 const Place = mongoose.model('Place', placeSchema);
 module.exports = Place

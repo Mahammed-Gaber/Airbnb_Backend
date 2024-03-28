@@ -1,7 +1,10 @@
 const mongoose = require('mongoose');
 
 const reviewSchema = mongoose.Schema({
-    comments : String,
+    review : {
+        type: String,
+        required : [true, 'Review can not be embty!']
+    },
     reviewer_id:{
         type: mongoose.Types.ObjectId,
         ref: 'Guest',
@@ -14,13 +17,27 @@ const reviewSchema = mongoose.Schema({
     },
     rating: {
         type: Number,
-        default: 0
+        min : 1,
+        max : 5
     },
     createdAt:{
         type: Date,
         default: Date.now
     }
 });
+
+
+reviewSchema.pre('find', function (next) {
+    this.populate({
+        path: 'reviewer_id',
+        select: 'guest_name'
+    }).populate({
+        path : 'place_id',
+        select : 'place_name price'
+    });
+    next();
+});
+
 
 const Review = mongoose.model('Review', reviewSchema);
 module.exports = Review;

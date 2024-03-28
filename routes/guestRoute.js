@@ -17,7 +17,7 @@ const storeImage = multer.diskStorage({
 const Upload = multer( {storage: storeImage} );
 
 
-router.post('/signup',Upload.single('guest_picture_url'), authGuestController.signup);
+router.post('/signup', authGuestController.signup);
 router.post('/login', authGuestController.login)
 
 router.post('/forgotPasword', authGuestController.forgotPassword)
@@ -26,7 +26,7 @@ router.post('/resetPassword', authGuestController.resetPassword)
 router.use(authGuestController.protect);
 
 router.get('/showGuests', Upload.single('guest_picture_url'), authGuestController.restrictTo('admin'), guestController.getAllGuests)
-router.put('/:id', authGuestController.restrictTo('guest'),guestController.updateGuest);
+router.put('/:id',Upload.single('guest_picture_url'), authGuestController.restrictTo('guest'),guestController.updateGuest);
 router.delete('/:id', authGuestController.restrictTo('admin', 'guest'), guestController.deleteGuest);
 
 

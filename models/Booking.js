@@ -33,11 +33,13 @@ const BookingSchema = mongoose.Schema({
     }
 });
 
-BookingSchema.pre('/^find/', (next) => {
-    this.populate('guest').populate({
-        path: 'place',
-        select: 'name'
+BookingSchema.pre('find', function (next) {
+    this.populate({
+        path : 'guest'
+    }).populate({
+        path: 'place'
     })
+    next()
 });
 
 //Update the index to find duplicate reservations with the same date for the same place

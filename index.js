@@ -7,12 +7,14 @@ const mongoose  = require('mongoose');
 const port = process.env.PORT;
 const helmet =require('helmet');
 const cookieParser = require("cookie-parser");
+const cors = require('cors')
 
 
 const hostRoute = require('./routes/hostRoute.js');
 const guestRoute = require('./routes/guestRoute.js');
 const placeRoute = require('./routes/placeRoutes.js');
 const bookingRoute = require('./routes/bookingRoute.js');
+const reviewRoute = require('./routes/reviewRoute.js');
 
 
 // Connection with database
@@ -34,11 +36,17 @@ app.use(helmet());
 // Cookie parser
 app.use(cookieParser());
 
+app.use(cors())
+
 // 2) ROUTES
+// app.use((req,res, next)=> {
+//     console.log(req.headers.authorization);
+//     next()
+// })
 app.use('/hosts' , hostRoute);
 app.use('/guests', guestRoute);
 app.use('/place', placeRoute);
 app.use('/booking', bookingRoute);
-
+app.use('/reviews', reviewRoute)
 
 app.listen(port, ()=> console.log(`app listinig in port ${port}`))

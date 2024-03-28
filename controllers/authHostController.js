@@ -13,15 +13,15 @@ const signToken = id => {
 const createSendToken = (user, statusCode, res) => {
     const token = signToken(user._id);
 
-    const cookieOptions = {
-        expires : new Date(
-            Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
-            ),
-        httpOnly : true
-    }
-    if(process.env.NODE_ENV === 'production') cookieOptions.secure = true;
+    // const cookieOptions = {
+    //     expires : new Date(
+    //         Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
+    //         ),
+    //     httpOnly : true
+    // }
+    // if(process.env.NODE_ENV === 'production') cookieOptions.secure = true;
 
-    res.cookie('jwt', token, cookieOptions);
+    // res.cookie('jwt', token, cookieOptions);
 
     //Remove password to add more secure
     user.password = undefined;
@@ -64,24 +64,24 @@ exports.login = catchAsync(async(req, res, next) => {
 
     //2) check if email exist and password correct
     const user = await Host.findOne({email}).select('password');
-    console.log(user);
     if (!user || !(await user.correctPassword(password, user.password))){
         return res.status(401).send('incorrect email or password');
     }
 
     // 3) everything okay send token via cookies
     createSendToken(user, 201, res);
+    req.user = user
 })
 
 exports.protect = catchAsync(async(req, res, next) => {
     // 1) getting token and check if token exist
     let token;
-    // if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-    //     token = req.headers.authorization.split(' ')[1]
-    // }
-    if(req.cookies.jwt) {
-        token = req.cookies.jwt
-    };
+    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+        token = req.headers.authorization.split(' ')[1]
+    }
+    // if(req.cookies.jwt) {
+    //     token = req.cookies.jwt
+    // };
 
     if (!token) {
         return res.status(401).send('You are not logged in , Please login to get access')

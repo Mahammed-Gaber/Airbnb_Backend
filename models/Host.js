@@ -25,7 +25,8 @@ const hostSchema = mongoose.Schema({
         required : [true, 'Please provide a valid password'],
         minlength : 8,
         // if we wan't show password to client or in show data
-        select : false
+        select : false,
+        lowercase : true,
     },
     passwordConfirm : {
         type : String,

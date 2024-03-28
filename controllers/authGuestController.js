@@ -1,4 +1,5 @@
 const Guest = require('../models/Guest');
+const sendEmail = require('../nodeMailer');
 const catchAsync = require('../utils/catchAsync');
 
 const jwt = require('jsonwebtoken');
@@ -15,16 +16,18 @@ const signToken = id => {
 const createSendToken = (user, statusCode, res) => {
     const token = signToken(user._id);
 
-    const cookieOptions = {
-        expires : new Date(
-            Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
-            ),
-        httpOnly : true
-    }
-    if(process.env.NODE_ENV === 'production') cookieOptions.secure = true;
+    // const cookieOptions = {
+    //     expires : new Date(
+    //         Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
+    //         ),
+    //     httpOnly : false
+    // }
+    // if(process.env.NODE_ENV === 'production') cookieOptions.secure = true;
 
-    res.cookie('jwt', token , cookieOptions)
-
+    // res.cookie('jwt', token , cookieOptions)
+    // console.log(res.headers);
+    
+    res.setHeader('Authorization', `Bearer ${token}`);
     // Remove password from data 
     user.password = undefined;
 
@@ -35,12 +38,16 @@ const createSendToken = (user, statusCode, res) => {
             user
         }
     });
+
+    // let message = '<h2>welcome in our Site</h2>';
+    // let text = 'You can now booking and show more places'
+    // sendEmail(user.email, message, text)
 }
 
 exports.signup = catchAsync( async(req ,res) => {
     //1) if everything is good create new user
-    let guest_picture_url = new Date + req.file.filename
-    let newUser = await Guest.create({...req.body, guest_picture_url});
+    // let guest_picture_url = new Date + req.file.filename
+    let newUser = await Guest.create(req.body);
 
     if (!newUser) {
         return res.status(400).send('Error in create User')
@@ -70,12 +77,12 @@ exports.login = catchAsync(async(req, res, next) => {
 exports.protect = catchAsync(async(req, res, next) => {
     // 1) getting token and check if token exist
     let token;
-    // if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-    //     token = req.headers.authorization.split(' ')[1]
-    // }
-    if(req.cookies.jwt){
-        token = req.cookies.jwt
-    };
+    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+        token = req.headers.authorization.split(' ')[1]
+    }
+    // if(req.cookies.jwt){
+    //     token = req.cookies.jwt
+    // };
 
     if (!token) {
         return res.status(401).send('You are not logged in , Please login to get access')
@@ -106,7 +113,6 @@ exports.protect = catchAsync(async(req, res, next) => {
 
 exports.restrictTo = (...roles) => {
     return (req, res, next) => {
-        // console.log(roles.includes(req.user.role));
         if (!roles.includes(req.user.role)) {
             return res.status(403).send('You do not have permission to perform this action!')
         }

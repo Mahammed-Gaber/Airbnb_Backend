@@ -72,7 +72,7 @@ const getAllPlaces = catchAsync(async(req, res) => {
 
     // 3) Pagination
     const page = req.query.page * 1 || 1;
-    const limit = req.query.limit * 1 || 10;
+    const limit = req.query.limit * 1 || 4;
     const skip = (page - 1) * limit;
 
     query.skip(skip).limit(limit);
@@ -92,9 +92,7 @@ const getAllPlaces = catchAsync(async(req, res) => {
     res.status(200).json({
         status : 'success',
         results : places.length,
-        data : {
         places : places
-        }
     })
 });
 

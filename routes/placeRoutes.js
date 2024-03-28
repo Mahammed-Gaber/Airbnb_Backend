@@ -38,10 +38,11 @@ const processingMultipleImages = (req, res, next) => {
     next();
 }
 
+router.get("/getAllPlaces", placeController.getAllPlaces);
+
 router.use(authHostController.protect)
 
 router.post('/create-place',uploadPlaceImages, processingMultipleImages, placeController.createPlace);
-router.get("/getAllPlaces", placeController.getAllPlaces);
 router.put('/:id', uploadPlaceImages, processingMultipleImages, authHostController.restrictTo('host'), placeController.updatePlaces);
 router.delete('/:id',authHostController.restrictTo('host', 'admin') ,placeController.deletePlaces);
 
