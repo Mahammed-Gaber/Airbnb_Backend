@@ -3,6 +3,7 @@ const catchAsync = require('../utils/catchAsync');
 
 const jwt = require('jsonwebtoken');
 const { promisify } = require('util');
+const sendEmail = require('../utils/email');
 
 const signToken = id => {
     return jwt.sign({ id }, process.env.JWT_SECRET , {
@@ -63,7 +64,7 @@ exports.login = catchAsync(async(req, res, next) => {
     }
 
     //2) check if email exist and password correct
-    const user = await Host.findOne({email}).select('password');
+    const user = await Host.findOne({email}).select('password role');
     if (!user || !(await user.correctPassword(password, user.password))){
         return res.status(401).send('incorrect email or password');
     }

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Place = require('./Place');
 
 const reviewSchema = mongoose.Schema({
     review : {
@@ -31,13 +32,33 @@ reviewSchema.pre('find', function (next) {
     this.populate({
         path: 'reviewer_id',
         select: 'guest_name'
-    }).populate({
-        path : 'place_id',
-        select : 'place_name price'
-    });
+    })
     next();
 });
 
+reviewSchema.statics.calcAverageRatings = async function (placeId){
+    const stats = await this.aggregate([
+        {
+            $match : {place_id : placeId}
+        },
+        {
+            $group : {
+                _id : '$place_id',
+                nRating : {$sum : 1},
+                avgRating : {$avg : '$rating'}
+            }
+        }
+    ]);
+
+    await Place.findByIdAndUpdate(placeId, {
+        ratingsQuantity : stats[0].nRating,
+        ratingsAverage : stats[0].avgRating
+    })
+};
+
+reviewSchema.post('save', function (){
+    this.constructor.calcAverageRatings(this.place_id)
+})
 
 const Review = mongoose.model('Review', reviewSchema);
 module.exports = Review;

@@ -24,7 +24,7 @@ const updateGuest =catchAsync(async(req, res) => {
 
     if (!update) return res.status(400).send('User not found or data not true');
 
-    res.status(200).send('User Updated successsfully!');
+    res.status(200).send('Updated successsfully!');
 });
 
 const deleteGuest = catchAsync( async(req, res) => {

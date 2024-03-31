@@ -25,7 +25,7 @@ router.post('/resetPassword', authGuestController.resetPassword)
 
 router.use(authGuestController.protect);
 
-router.get('/showGuests', Upload.single('guest_picture_url'), authGuestController.restrictTo('admin'), guestController.getAllGuests)
+router.get('/showGuests', authGuestController.restrictTo('admin'), guestController.getAllGuests)
 router.put('/:id',Upload.single('guest_picture_url'), authGuestController.restrictTo('guest'),guestController.updateGuest);
 router.delete('/:id', authGuestController.restrictTo('admin', 'guest'), guestController.deleteGuest);
 

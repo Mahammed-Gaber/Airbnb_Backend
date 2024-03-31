@@ -31,3 +31,13 @@ exports.createReview = catchAsync(async(req, res)=> {
         review : newReview
     })
 })
+
+exports.updateReview = catchAsync(async(req, res)=>{
+    let reviewId = req.params
+    const updateOne = await Review.findOneAndUpdate(reviewId, req.body);
+
+    res.status(200).json({
+        updates : 'success',
+        data : updateOne
+    })
+})
