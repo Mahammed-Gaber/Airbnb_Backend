@@ -38,7 +38,6 @@ const createSendToken = (user, statusCode, res) => {
             user
         }
     });
-console.log(user);
     // let message = '<h2>welcome in our Site</h2>';
     // let text = 'You can now booking and show more places'
     // sendEmail(user.email, message, text)
