@@ -34,11 +34,11 @@ const createSendToken = (user, statusCode, res) => {
     res.status(statusCode).json({
         status: 'success',
         token,
-        date : {
+        data : {
             user
         }
     });
-
+console.log(user);
     // let message = '<h2>welcome in our Site</h2>';
     // let text = 'You can now booking and show more places'
     // sendEmail(user.email, message, text)
