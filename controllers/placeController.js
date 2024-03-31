@@ -72,7 +72,7 @@ const getAllPlaces = catchAsync(async(req, res) => {
 
     // 3) Pagination
     const page = req.query.page * 1 || 1;
-    const limit = req.query.limit * 1 || 20;
+    const limit = req.query.limit * 1 || 7;
     const skip = (page - 1) * limit;
 
     query.skip(skip).limit(limit);
@@ -121,4 +121,18 @@ const deletePlaces = catchAsync(async(req, res) => {
 });
 
 
-module.exports = {createPlace,getAllPlaces,updatePlaces,deletePlaces};
+const getPlaceById = catchAsync(async(req, res) => {
+    if (!req.params.id) return res.status(404).send('Place ID not found');
+    const placeId = req.params.id;
+    let place = await Place.findOne({_id : placeId});
+
+    if (!place) return res.sendStatus(404);
+
+    res.status(200).json({
+        status : 'success',
+        data : place
+    });
+});
+
+
+module.exports = {createPlace,getAllPlaces,updatePlaces,deletePlaces, getPlaceById};

@@ -39,6 +39,7 @@ const processingMultipleImages = (req, res, next) => {
 }
 
 router.get("/getAllPlaces", placeController.getAllPlaces);
+router.get('/:id',placeController.getPlaceById);
 
 router.use(authHostController.protect)
 
