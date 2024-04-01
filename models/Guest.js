@@ -78,5 +78,4 @@ guestSchema.methods.changedPasswordAfter = (passwordChangedAt,JWTTiemstamp) => {
 }
 
 const Guest = mongoose.model('Guest', guestSchema);
-Guest.createIndexes({ guest_id : 1 });
 module.exports= Guest

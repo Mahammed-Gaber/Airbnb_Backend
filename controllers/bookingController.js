@@ -41,3 +41,14 @@ exports.myPlaces = catchAsync(async(req, res, next)=> {
         places : places
     })
 })
+
+exports.myBooking = catchAsync(async(req, res, next)=> {
+    // 1) find user and all places belongs to user from booking 
+    const bookings = await Booking.find({guest : req.user._id});
+
+    res.status(200).json({
+        status : 'success',
+        results: bookings.length,
+        places : bookings
+    })
+})

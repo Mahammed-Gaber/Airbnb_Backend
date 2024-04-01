@@ -35,9 +35,8 @@ const BookingSchema = mongoose.Schema({
 
 BookingSchema.pre('find', function (next) {
     this.populate({
-        path : 'guest'
-    }).populate({
-        path: 'place'
+        path: 'place',
+        select : 'place_name imageCover'
     })
     next()
 });

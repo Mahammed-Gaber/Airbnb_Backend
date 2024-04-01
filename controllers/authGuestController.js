@@ -45,7 +45,7 @@ const createSendToken = (user, statusCode, res) => {
 
 exports.signup = catchAsync( async(req ,res) => {
     //1) if everything is good create new user
-    // let guest_picture_url = new Date + req.file.filename
+    // let guest_picture_url = req.file.filename
     let newUser = await Guest.create(req.body);
 
     if (!newUser) {
