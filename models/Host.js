@@ -30,6 +30,7 @@ const hostSchema = mongoose.Schema({
     },
     passwordConfirm : {
         type : String,
+        lowercase : true,
         required : [true, 'Please confirm your password'],
         validate : {
             validator : function (pass) {

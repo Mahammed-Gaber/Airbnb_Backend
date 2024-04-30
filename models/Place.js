@@ -3,13 +3,13 @@ const mongoose = require("mongoose");
 const placeSchema = mongoose.Schema({
     place_name: {
         type:String,
-        minLength: 10,
+        // minLength: 10,
         required : [true, 'A Place must have a name'],
         trim : true
     },
     description:{
         type:String,
-        minLength: 20,
+        // minLength: 20,
         required : [true, 'A Place must have a description'],
         trim : true
     },
@@ -18,9 +18,12 @@ const placeSchema = mongoose.Schema({
         required : [true, 'A Place must have an overview'],
         trim : true
     },
-    pictures_url: [String],
+    pictures_url: {
+        type: [String],
+        required : [true, 'A Place must have images']
+    },
     imageCover : {
-        type: String,
+        type : String,
         required : [true, 'A Place must have a cover image']
     },
     location: {
@@ -31,16 +34,22 @@ const placeSchema = mongoose.Schema({
     longitude: Number,
     property_type: [{
         type:String,
+        required: true,
         trim : true
         }],
+    place_type: {
+        type:String,
+        required: true,
+        trim : true
+        },
     room_type: String,
     accommodates: Number,
     bedrooms: Number,
     beds: Number,
-    amenities: [{
+    amenities: {
         type:String,
         tirm: true
-        }],
+        },
     ratingsAverage : {
         type : Number,
         default : 4.5,
@@ -57,13 +66,14 @@ const placeSchema = mongoose.Schema({
     },
     has_availability: String,
     license: String,
-    instant_bookable: String,
+    instant_bookable: Boolean,
     host_id:{
         type: mongoose.Types.ObjectId,
         ref: 'Host',
         required : [true, 'A Place must belong to a Host']
     },
-    startDates: [Date],
+    startDates: Date,
+    endDates: Date,
     createdAt:{
         type: Date,
         default: Date.now

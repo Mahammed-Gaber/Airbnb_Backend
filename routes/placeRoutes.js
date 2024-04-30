@@ -22,14 +22,18 @@ const uploadPlaceImages = Upload.fields([
     {name : 'pictures_url', maxCount : 10}
 ])
 const processingMultipleImages = (req, res, next) => {
+    if (!req.files.pictures_url || !req.files.imageCover) {
+        return res.status(400).json({ error: "No images found." });
+    }
     // 1) Cover image
-    let imageCover= Date.now() + req.files.imageCover[0].filename;
+    console.log(req.files.pictures_url);
+    let imageCover= req.files.imageCover[0].filename;
 
     // 2) Images
     const pictures_url = []
     let imags= req.files.pictures_url;
     imags.map(val => {
-        pictures_url.push( Date.now() + val.filename )
+        pictures_url.push( val.filename )
     });
 
     req.body.imageCover = imageCover;

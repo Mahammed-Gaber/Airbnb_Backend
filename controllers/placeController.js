@@ -3,21 +3,20 @@ const catchAsync = require("../utils/catchAsync");
 
 
 const createPlace = catchAsync(async(req, res)=> {
-    let {place_name, description,neighborhood_overview, imageCover, pictures_url,location,
-        latitude,longitude ,property_type,room_type, accommodates,bedrooms,
-        beds,amenities,price,has_availability,license,instant_bookable,startDates} = req.body;
+    let {place_name, description,neighborhood_overview,location,imageCover, pictures_url,
+        latitude,longitude ,property_type,room_type, accommodates,bedrooms,place_type,
+        beds,amenities,price,has_availability,license,instant_bookable,startDates, endDates} = req.body;
 
     let newPlace = await Place.create({
         place_name: place_name,
         description: description,
         neighborhood_overview: neighborhood_overview,
-        pictures_url: pictures_url,
-        imageCover : imageCover,
         location: location,
         latitude: latitude,
         longitude: longitude,
         property_type: property_type,
         room_type: room_type,
+        place_type: place_type,
         accommodates: accommodates,
         bedrooms: bedrooms,
         beds: beds,
@@ -28,6 +27,9 @@ const createPlace = catchAsync(async(req, res)=> {
         instant_bookable: instant_bookable,
         host_id: req.user._id,
         startDates: startDates,
+        endDates : endDates,
+        imageCover: imageCover,
+        pictures_url : pictures_url
     });
 
     if(!newPlace) return res.status(400).send('Error on create Place');
@@ -72,7 +74,7 @@ const getAllPlaces = catchAsync(async(req, res) => {
 
     // 3) Pagination
     const page = req.query.page * 1 || 1;
-    const limit = req.query.limit * 1 || 7;
+    const limit = req.query.limit * 1 || 30;
     const skip = (page - 1) * limit;
 
     query.skip(skip).limit(limit);

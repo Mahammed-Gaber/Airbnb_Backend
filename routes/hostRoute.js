@@ -21,6 +21,7 @@ router.post('/login', authHostController.login);
 
 router.use(authHostController.protect);
 
+router.get('/user',authHostController.getUser)
 router.get('/', hostController.getAllHostes);
 router.get('/:id', hostController.getHostById);
 router.get('/:id', hostController.updateHostById);

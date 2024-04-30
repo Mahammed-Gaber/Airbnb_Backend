@@ -1,12 +1,41 @@
+const stripe = require('stripe')(process.env.STRIP_SECRET_KEY)
 const Booking = require('../models/Booking');
 const Place = require('../models/Place');
 const catchAsync = require('../utils/catchAsync');
 
 
-// exports.getCheckoutSession = catchAsync(async(req, res, next) => {
+exports.getCheckoutSession = catchAsync(async(req, res, next) => {
+    console.log(req.params);
 
-//     next();
-// })
+    let place = await Place.findOne({_id : req.params.id});
+    // console.log(place);
+
+    const session = await stripe.checkout.sessions.create({
+        payment_method_types: ['card'],
+        success_url : `${req.protocol}://${req.get('host')}/`,
+        cancel_url : `http://localhost:5173/Accomodation`,
+        customer_email: req.user.email,
+        client_reference_id: req.params.placeId,
+        line_items: [{
+            price_data: {
+                currency: 'usd',
+                unit_amount: place.price,
+                product_data: {
+                    name: place.place_name,
+                    description: place.description,
+                    images: [`http://localhost:3000/images/${place.imageCover}`],
+                },
+            },
+            quantity: 2
+        }],
+        mode: 'payment',
+    })
+    res.status(200).json({
+        status: 'success',
+        session
+    })
+    // next();
+})
 
 exports.createBookingCheckout = catchAsync(async(req, res, next) => {
     const {place, guest, price} = req.query;

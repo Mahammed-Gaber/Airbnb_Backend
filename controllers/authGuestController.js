@@ -46,6 +46,15 @@ const createSendToken = (user, statusCode, res) => {
 exports.signup = catchAsync( async(req ,res) => {
     //1) if everything is good create new user
     // let guest_picture_url = req.file.filename
+    const {email, password} = req.body;
+
+    let freshUser = await Guest.findOne({email: email});
+    if (freshUser) {
+        return res.status(400).json({
+            message : 'This Email is oready Exist'
+        })
+    }
+
     let newUser = await Guest.create(req.body);
 
     if (!newUser) {
@@ -72,6 +81,15 @@ exports.login = catchAsync(async(req, res, next) => {
     createSendToken(user, 201, res);
 })
 
+exports.getUser = catchAsync(async(req, res, next) => {
+    if (!req.user) {
+        return res.status(400).send('User Not Found');
+    }else res.status(200).json({
+        status : 'success',
+        currentUser : req.user
+    })
+})
+
 // protect route
 exports.protect = catchAsync(async(req, res, next) => {
     // 1) getting token and check if token exist
@@ -84,7 +102,9 @@ exports.protect = catchAsync(async(req, res, next) => {
     // };
 
     if (!token) {
-        return res.status(401).send('You are not logged in , Please login to get access')
+        return res.status(401).json({
+            message : 'You are not logged in , Please login to get access'
+        })
     }
 
     // 2) verification token so decoded show payload data

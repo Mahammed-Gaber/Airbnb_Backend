@@ -4,6 +4,7 @@ const catchAsync = require('../utils/catchAsync');
 
 const getAllGuests = catchAsync(async (req , res) => {
     let guests = await Guest.find();
+    console.log(guests);
     if (!guests) return res.status(404).send('Not Guests found!');
     res.status(200).json({
         status : 'success',

@@ -26,7 +26,6 @@ const guestSchema = mongoose.Schema({
         minlength : 8,
         // if we wan't show password to client or in show data
         select : false,
-        lowercase : true
     },
     passwordConfirm : {
         type : String,
@@ -36,7 +35,7 @@ const guestSchema = mongoose.Schema({
                 return pass === this.password
             },
             message : 'Password is not the same'
-        }
+        },
     },
     guest_picture_url: String,
     guest_verifications: [{
