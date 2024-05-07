@@ -44,11 +44,11 @@ app.use(express.static("imgs"));
 app.use("/images", express.static("./images"));
 
 // 2) ROUTES
-app.use((req,res, next)=> {
-    // console.log(req);
-    console.log(req.protocol);
-    next()
-})
+// app.use((req,res, next)=> {
+//     // console.log(req);
+//     console.log(req.protocol);
+//     next()
+// })
 app.use('/hosts' , hostRoute);
 app.use('/guests', guestRoute);
 app.use('/place', placeRoute);
