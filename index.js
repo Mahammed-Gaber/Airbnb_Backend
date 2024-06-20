@@ -18,7 +18,7 @@ const reviewRoute = require('./routes/reviewRoute.js');
 
 
 // Connection with database
-mongoose.connect('mongodb://127.0.0.1:27017/MERN').then(()=>{
+mongoose.connect(process.env.DATABASE_URL).then(()=>{
     console.log('Database Connected...');
 }).catch((err)=>{
     console.log(err);
